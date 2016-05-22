@@ -1,0 +1,279 @@
+/* custom */
+
+.padding-left-10 {
+  padding-left: 10px;
+}
+
+.table > tbody > tr > th,
+.table > thead > tr > th{
+  text-align: center;
+}
+
+div.awesomplete {
+  display: block;
+}
+
+input[name="region"] {
+  display: none;
+}
+
+body{
+	background-color: #000;
+	color: #20ac89;
+	font-family: Futura,"Trebuchet MS",Arial,sans-serif;
+	font-size: 1.8em;
+	font-weight: normal;
+	width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+h1{
+	font-size: 4em;
+}
+
+/* v1 */
+.header .container{
+	padding: 30px 0 80px;
+	background: -webkit-linear-gradient(rgba(255,255,255,0.8), rgba(255,0,0,0)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(255,255,255,0.8), rgba(255,0,0,0)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(255,255,255,0.8), rgba(255,0,0,0)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(255,255,255,0.8), rgba(255,0,0,0));
+}
+
+.header{
+	margin-bottom: 50px;
+	width: 100%;
+}
+
+.header{
+	color: #000;
+	background: url("../img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
+	b-webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+/* v2 */
+/*
+.header .container{
+	padding: 30px 0 80px;
+}
+
+.header{
+	margin-bottom: 20px;
+}
+
+.header{
+	color: #fff;
+	background: url("../img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
+	b-webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+*/
+
+.form-control{
+	color: #fff;
+	background-color: #000;
+	border: 0;
+	border-bottom: 1px solid #fff;
+	border-radius: 0;
+}
+
+.form-control:focus{
+	color: #66afe9;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px -8px rgba(102,175,233,.6);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px -8px rgba(102,175,233,.6)
+}
+
+.find,
+.goback{
+	color: #000;
+	background-color: #20ac89;
+	border: 1px solid #333;
+	border-radius: 4px;
+}
+
+.find:hover,
+.find:focus,
+.goback:hover,
+.goback:focus{
+	background-color: #28d7ab;
+}
+
+.find:active,
+.goback:active{
+	background-color: #ccc;
+}
+
+
+.form-group{
+	margin-bottom: 50px;
+}
+
+.row{
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.content-area{
+	max-width: 400px;
+	float: none;
+	margin: 0 auto;
+	margin-bottom: 100px;
+}
+
+.footer{
+	color: #fff;
+	margin-bottom: 50px;
+}
+
+.footer a{
+	text-decoration: none;
+}
+
+.input-group-btn:last-child > .btn,
+.input-group-btn:last-child > .dropdown-toggle{
+	border-radius: 4px;
+	border-bottom-left-radius: 0;
+}
+
+.selectpicker option{
+	color: #20ac89;
+	background-color: #fff;
+}
+
+.checkbox label{
+	color: #66afe9;
+	font-size: 16px;
+}
+
+.awesomplete{
+	font-size: 14px;
+}
+
+.find:focus,
+.goback:focus{
+	color: #000;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255,255,255,.6);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255,255,255,.6);
+}
+
+.dropdown-menu > li > a{
+	color: #20ac89;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus{
+	color: #fff;
+	background-color: #66afe9;
+}
+
+
+/* matchups */
+.goback{
+	border-color: none;
+}
+
+.goback:hover{
+	border-color: none;
+}
+
+.enemy{
+	margin-bottom: 50px;
+	color: #ddd;
+	font-size: 16px;
+}
+
+.enemy b{
+	color: #79b8ec;
+}
+
+.enemystats{
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.enemyimg{
+	padding-bottom: 20px;
+}
+
+.championList{
+	margin-bottom: 50px;
+}
+
+.championList > tbody > tr > th{
+	border-bottom: 1px solid #20ac89;
+	font-size: 14px;
+}
+
+.championList > tbody > tr > th:not(:first-child){
+	padding-top: 15px;
+}
+
+.championList > tbody > tr > th:first-child{
+	text-align: left;
+	padding-left: 20px;
+}
+
+.championList a{
+	color: #fff;
+}
+
+.championList a:hover,
+.championList a:active,
+.championList a:focus{
+	color: #66afe9;
+	text-decoration: none;
+}
+
+@media (max-width: 767px) {
+	.enemystats{
+		text-align: center;
+		padding-top: 0;
+	}
+
+	.enemyimg{
+		padding-bottom: 0;
+	}
+}
+
+@media (max-width: 526px) {
+  body {
+    font-size: 14px;
+  }
+  .container {
+    padding: 0;
+    margin: 0;
+  }
+  #infoFoundDisplayTable {
+    padding: 0;
+    margin: 0;
+  }
+  .championList thead tr th:nth-child(3),
+  .championList tbody tr th:nth-child(3) {
+    display: none;
+  }
+}
+
+.spinner-area,
+.alert-danger {
+  display: none;
+}
+
+.spinner {
+  display: block;
+  margin: auto;
+}

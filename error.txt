@@ -1,0 +1,41 @@
+ERROR, match_id: 2125482743
+DUO_CARRY:BOTTOM:twistedfate 4 [middle]
+DUO_SUPPORT:BOTTOM:zed 238 [middle]
+NONE:JUNGLE:teemo 17 [top]
+NONE:JUNGLE:jax 24 [jungle top]
+NONE:JUNGLE:lux 99 [support middle]
+
+ERROR, match_id: 2107008460
+DUO_CARRY:BOTTOM:kogmaw 96 [adc]
+DUO_CARRY:MIDDLE:jhin 202 [adc]
+DUO_SUPPORT:BOTTOM:braum 201 [support]
+DUO_SUPPORT:MIDDLE:drmundo 36 [top jungle]
+SOLO:TOP:jax 24 [jungle top]
+
+ERROR, match_id: 2094561463
+DUO_CARRY:BOTTOM:missfortune 21 [adc]
+DUO_SUPPORT:BOTTOM:morgana 25 [middle support]
+NONE:JUNGLE:fiora 114 [top]
+NONE:JUNGLE:udyr 77 [jungle]
+SOLO:MIDDLE:ezreal 81 [adc]
+
+ERROR, match_id: 2090874845
+DUO_CARRY:BOTTOM:ashe 22 [adc]
+DUO_SUPPORT:BOTTOM:braum 201 [support]
+NONE:JUNGLE:zed 238 [middle]
+NONE:JUNGLE:zilean 26 [support middle]
+NONE:JUNGLE:nocturne 56 [jungle]
+
+ERROR, match_id: 2107008460
+DUO_CARRY:BOTTOM:kogmaw 96 [adc]
+DUO_CARRY:MIDDLE:jhin 202 [adc]
+DUO_SUPPORT:BOTTOM:braum 201 [support]
+DUO_SUPPORT:MIDDLE:drmundo 36 [top jungle]
+SOLO:TOP:jax 24 [jungle top]
+
+ERROR, match_id: 2027918789
+DUO_CARRY:BOTTOM:draven 119 [adc]
+DUO_CARRY:MIDDLE:rumble 68 [top jungle]
+DUO_SUPPORT:BOTTOM:blitzcrank 53 [support]
+DUO_SUPPORT:MIDDLE:rammus 33 [jungle top]
+SOLO:TOP:renekton 58 [top]

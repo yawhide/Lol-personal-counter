@@ -1,0 +1,10 @@
+/* TEAM */
+Your title: Stefan Wojcik
+Github: github.com/yawhide
+Location: Toronto, ON or San Mateo, CA
+/* THANKS */
+Github: github.com/Ooblah
+/* SITE */
+Last update: 2016/05/22
+Standards: HTML5, CSS3
+Components: Awesomeplete, Fetch

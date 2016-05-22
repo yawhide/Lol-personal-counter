@@ -22,3 +22,11 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+api
+start
+gin-bin
+
+# MAC OSX
+.DS_Store
+config.json
