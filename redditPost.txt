@@ -20,6 +20,6 @@ If the website doesn't load it means there are too many people checking out the 
 
 
 **Disclaimer**
-
+* While I can get *most* games, I cannot determine every single matchup on every game (just because the info provided by riot can be ambiguous). This website doesn't just determine your champion's overall win rate (which is easy), it tries to determine your champion's win rate against specific enemy champions. I don't have an exact figure but I can determine around 90%+ match ups. So just incase you don't see your latest game vs riven, this is why. I do have the *ambiguous* games logged so maybe in the future some machine learning could be applied to make that percentage close to 100%.
 
 **Updates:**
