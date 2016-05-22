@@ -15,5 +15,5 @@ The ranked games that it pulls from is limited to 30 games / 6hrs (to help with 
 <enter>
 Feedback is always welcome and please do not hesitate to comment on anything you dislike or like! I have a list of things I want to add but I’m sure there are lots of things I haven't thought of so please share. <enter>
 <enter>
-If the website doesn't load it means there are too many people checking the site out so please try again later!<enter>
+If the website doesn't load it means there are too many people checking out the site so please try again later!<enter>
 <enter>
