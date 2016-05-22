@@ -1,25 +1,39 @@
-TITLE: Lol Personal Counters - Website to help you in Champion Select
+[Lol Personal Counter](http://yawhide.com/lol-personal-counter)
 
+**tl;dr**
 
-[Lol Personal Counter](yawhide.com/lol-personal-counter)
+Website that calculates your personal win rate against enemy champions
 
-please be nice to my little server :(
+&nbsp;
 
 Hello,
 
 I made a website for the 2016 riot api challenge and I would like to share it with the masses! My website collects your [Pre]Season 6 ranked games and determines who you played against and the win rates of those games.
 
-On the main page, enter your summoner name, region, lane, and enemy champion. My website will then calculate your personal winrate against that enemy in that lane, while also showing you the champion.gg win rates for that particular matchup. My friends and I have been using this website during champion select for a while now.<enter>
-<enter>
-The ranked games that it pulls from is limited to 30 games / 6hrs (to help with any high load usage and to combat the riot api rate limit) and only [Pre]Season 6. If all goes well, I'll up the limit soon. <enter>
-<enter>
-Feedback is always welcome and please do not hesitate to comment on anything you dislike or like! I have a list of things I want to add but I’m sure there are lots of things I haven't thought of so please share. <enter>
-<enter>
-If the website doesn't load it means there are too many people checking out the site so please try again later!<enter>
-<enter>
+
+On the main page, enter your summoner name, region, lane, and enemy champion. My website will then calculate your personal winrate against that enemy in that lane, while also showing you the [champion.gg](http://champion.gg) win rates for that particular matchup. My friends and I have been using this website during champion select for a while now.
+
+&nbsp;
+
+The ranked games that it pulls from is limited to 30 games / 6hrs (to help with any high load usage and to combat the riot api rate limit) and only [Pre]Season 6. If all goes well, I'll up the limit soon.
+
+
+Feedback is always welcome and please do not hesitate to comment on anything you dislike or like! I have a list of things I want to add but I’m sure there are lots of things I haven't thought of so please share.
+ 
+&nbsp;
+
+If the website doesn't load it means there are too many people checking out the site so please try again later!
+
+&nbsp;
 
 
 **Disclaimer**
 
+While I can get *most* games, I cannot determine every single matchup on every game (just because the info provided by riot can be ambiguous). This website doesn't just determine your champion's overall win rate (which is easy), it tries to determine your champion's win rate against specific enemy champions. I don't have an exact figure but I can determine around 90%+ match ups. So just incase you don't see your latest game vs riven, this is why. I do have the *ambiguous* games logged so maybe in the future some machine learning could be applied to make that percentage close to 100%.
+
+&nbsp;
 
 **Updates:**
+
+&nbsp;
+
