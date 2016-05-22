@@ -9,7 +9,7 @@ Hello,
 
 I made a website for the 2016 riot api challenge and I would like to share it with the masses! My website collects your [Pre]Season 6 ranked games and determines who you played against and the win rates of those games.
 
-On the main page, enter your summoner name, region, lane, and enemy champion. My website will then calculate your personal winrate against that enemy in that lane, while also showing you the champion.gg win rates for that particular matchup. My friends and I have been using this website for a while in champion select with good results. <enter>
+On the main page, enter your summoner name, region, lane, and enemy champion. My website will then calculate your personal winrate against that enemy in that lane, while also showing you the champion.gg win rates for that particular matchup. My friends and I have been using this website during champion select for a while now.<enter>
 <enter>
 The ranked games that it pulls from is limited to 30 games / 6hrs (to help with any high load usage and to combat the riot api rate limit) and only [Pre]Season 6. If all goes well, I'll up the limit soon. <enter>
 <enter>
