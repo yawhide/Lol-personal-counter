@@ -20,6 +20,7 @@ var RIOT_REGIONS = map[string]bool{
 	"br":   true,
 	"eune": true,
 	"euw":  true,
+	"jp":   true,
 	"kr":   true,
 	"lan":  true,
 	"las":  true,
@@ -428,7 +429,7 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 			continue
 		} else if uint64(matchIDs[index]) == m.MatchId {
 			log.Println("analyzing game:", m.MatchId)
-			if matchIDsCount >= 30 {
+			if matchIDsCount >= 50 {
 				break
 			}
 			matchIDsCount++

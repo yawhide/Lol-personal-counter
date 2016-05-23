@@ -57,9 +57,6 @@ func (m *MatchupPostData) FormatFields() {
 
 func main() {
 
-	// log.SetFlags(log.Lshortfile)
-	log.SetOutput(ioutil.Discard)
-
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.SetConfigType("json")
@@ -70,6 +67,13 @@ func main() {
 	username := viper.GetString("postgres.username")
 	password := viper.GetString("postgres.password")
 	urlPrefix = viper.GetString("urlPrefix")
+
+	logging := viper.GetBool("logging")
+	if logging == true {
+		log.SetFlags(log.Lshortfile)
+	} else {
+		log.SetOutput(ioutil.Discard)
+	}
 
 	db = pg.Connect(&pg.Options{
 		User:     username,
@@ -176,7 +180,7 @@ func GetMatchup(w http.ResponseWriter, r *http.Request) {
 
 		summoner, err := getOrCreateSummoner(m.Region, m.SummonerName, db)
 		if err != nil {
-			errors.New("Summoner does not exist")
+			err = errors.New("Summoner does not exist")
 			if err.Error() == "Summoner does not exist" {
 				http.Error(w, err.Error(), http.StatusNotFound)
 				return
