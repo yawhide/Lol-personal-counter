@@ -108,6 +108,7 @@ func main() {
 	serveSingle(urlPrefix+"favicon.ico", "./static/favicon.ico")
 	serveSingle(urlPrefix+"robots.txt", "./static/robots.txt")
 	serveSingle(urlPrefix+"humans.txt", "./static/humans.txt")
+	serveSingle(urlPrefix+"riot.txt", "./static/riot.txt")
 
 	http.HandleFunc(urlPrefix+"", Index)
 	http.HandleFunc(urlPrefix+"matchup", GetMatchup)
