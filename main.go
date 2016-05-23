@@ -183,8 +183,12 @@ func GetMatchup(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusNotFound)
 				return
 			}
+			if err.Error() == "Summoner is not level 30" {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 			if err.Error() == "Failed to get summoner" || err.Error() == "Failed to get champion masteries" {
-				http.Error(w, err.Error()+" from riot's api", http.StatusInternalServerError)
+				http.Error(w, err.Error()+" from riot's api, please try again later", http.StatusInternalServerError)
 				return
 			}
 			// t, _ := template.ParseFiles("index.html")

@@ -285,7 +285,8 @@ func getChampionMasteriesBySummonerIDAndSave(region string, summoner MySummoner,
             last_play_time = ?last_play_time`).Create()
 		if err != nil {
 			fmt.Println("Failed to update masteries for summoner:", summoner.SummonerID, "region:", region, err)
-			err = errors.New("Failed to save champion masteries")
+			// err = errors.New("Failed to save champion masteries")
+			err = nil
 			return
 		}
 	}
@@ -293,8 +294,8 @@ func getChampionMasteriesBySummonerIDAndSave(region string, summoner MySummoner,
 	_, err = db.Model(&s).Set("masteries_updated_at = ?", time.Now().UTC()).Where("summoner_id = ?", summoner.SummonerID).Update()
 	if err != nil {
 		fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "masteries updated at time.", err)
-		err = errors.New("Failed to update summoner masteries updated time")
-		return
+		// err = errors.New("Failed to update summoner masteries updated time")
+		// return
 	}
 	return
 }
@@ -383,8 +384,8 @@ func getMatchups(region string, summoner MySummoner, enemyChampionID string, rol
 	_, err = db.Query(&pms, sql)
 	if err != nil {
 		fmt.Println("Failed to get personal winrates for summoner:", summoner.SummonerID, "region:", region)
-		err = errors.New("Failed to get personal winrates")
-		return
+		// err = errors.New("Failed to get personal winrates")
+		// return
 	}
 	log.Println("personal matchups:", pms)
 	return
