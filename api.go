@@ -77,7 +77,7 @@ func (s *MySummoner) UpdateMatchlistUpdatedAt() {
 
 func (s *MySummoner) UpdateMatchlistTimestamp(t uint64) {
 	s.MatchlistTimestamp = t
-	s.UpdateMatchlistUpdatedAt()
+	s.MatchlistUpdatedAt = time.Now().UTC()
 }
 
 type ChampionMatchupWinrate struct {
@@ -494,8 +494,8 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	summoner.UpdateMatchlistTimestamp(matchlistUpdatedTimestamp)
 	err = updateSummonerMatchlistData(summoner)
 	if err != nil {
-		fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "matchlist updated at time.", err)
-		err = errors.New("Failed to update matchlist updated at time")
+		fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "matchlist updated at and matchlist timestamp.", err)
+		err = errors.New("Failed to update matchlist updated at time and matchlist timestamp")
 		return
 	}
 	return nil
