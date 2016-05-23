@@ -9,10 +9,10 @@ import (
 
 type WinnerLoser struct {
 	Lane             string
-	LoserChampionId  string
-	LoserSummonerId  uint64
-	WinnerChampionId string
-	WinnerSummonerId uint64
+	LoserChampionID  string
+	LoserSummonerID  uint64
+	WinnerChampionID string
+	WinnerSummonerID uint64
 }
 
 var GAME_TEMPLATES = [][]string{}
@@ -215,12 +215,12 @@ Participants []struct {
         Lane string
     }
     ParticipantId int
-    ChampionId    int
+    ChampionID    int
     TeamId        int
 }
 ParticipantIdentities []struct {
     Player struct {
-        SummonerId uint64
+        SummonerID uint64
     }
     ParticipantId int
 }

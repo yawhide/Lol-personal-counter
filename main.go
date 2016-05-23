@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -180,24 +179,22 @@ func GetMatchup(w http.ResponseWriter, r *http.Request) {
 
 		summoner, err := getOrCreateSummoner(m.Region, m.SummonerName, db)
 		if err != nil {
-			err = errors.New("Summoner does not exist")
 			if err.Error() == "Summoner does not exist" {
 				http.Error(w, err.Error(), http.StatusNotFound)
 				return
 			}
 			if err.Error() == "Failed to get summoner" || err.Error() == "Failed to get champion masteries" {
-
 				http.Error(w, err.Error()+" from riot's api", http.StatusInternalServerError)
 				return
 			}
 			// t, _ := template.ParseFiles("index.html")
-			fmt.Println("Error get or create summoner:", m.SummonerName, err)
+			fmt.Println("Error get or create summoner:", m.SummonerName, "region:", m.Region, err)
 			// result := IndexResult{urlPrefix, err}
 			// t.Execute(w, result)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		matchups, pms, err := getMatchups(summoner, CHAMPION_KEYS[m.Enemy], m.Role, db)
+		matchups, pms, err := getMatchups(m.Region, summoner, CHAMPION_KEYS[m.Enemy], m.Role, db)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

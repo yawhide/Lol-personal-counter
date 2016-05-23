@@ -37,13 +37,14 @@ var CHAMPION_KEYS_BY_KEY_PROPER_CASING = map[string]string{"35": "Shaco", "36": 
 var apiEndpointMap map[string]*lol.APIEndpoint
 
 type Mastery struct {
-	ChampionId                   int    `json:"championId", sql:",pk"`
+	ChampionID                   int    `json:"championId", sql:",pk"`
 	ChampionLevel                int    `json:"championLevel"`
 	ChampionPoints               int    `json:"championPoints"`
 	ChampionPointsSinceLastLevel int    `json:"championPointsSinceLastLevel"`
 	ChampionPointsUntilNextLevel int    `json:"championPointsUntilNextLevel"`
 	LastPlayTime                 uint64 `json:"lastPlayTime"`
-	SummonerId                   uint64 `json:"playerId", sql:",pk"`
+	Region                       string `sql:",pk"`
+	SummonerID                   uint64 `json:"playerId", sql:",pk"`
 }
 
 type RiotError struct {
@@ -55,13 +56,14 @@ func (err RiotError) Error() string {
 }
 
 type MySummoner struct {
-	SummonerId         uint64 `json:"id", sql:",pk"`
 	Name               string `json:"name"`
 	ProfileIconID      int    `json:"profileIconId"`
 	MasteriesUpdatedAt time.Time
 	MatchlistTimestamp uint64
 	MatchlistUpdatedAt time.Time
+	Region             string `sql:",pk"`
 	RevisionDate       uint64 `json:"revisionDate"`
+	SummonerID         uint64 `json:"id", sql:",pk"`
 	SummonerLevel      uint32 `json:"summonerLevel"`
 }
 
@@ -116,16 +118,16 @@ func (c *ChampionMatchup) UpdatePersonalData(p PersonalMatchup) {
 
 type PersonalMatch struct {
 	Lane             string
-	LoserChampionId  string
-	LoserSummonerId  uint64 `sql:",pk"`
+	LoserChampionID  string
+	LoserSummonerID  uint64 `sql:",pk"`
 	MatchId          uint64 `sql:",pk"`
 	PlatformId       string
 	QueueType        string
 	Region           string `sql:",pk"`
 	Season           string
 	Timestamp        uint64
-	WinnerChampionId string
-	WinnerSummonerId uint64 `sql:",pk"`
+	WinnerChampionID string
+	WinnerSummonerID uint64 `sql:",pk"`
 }
 
 type PersonalMatchup struct {
@@ -167,8 +169,9 @@ func createSchema(db *pg.DB) error {
       champion_points_since_last_level bigint,
       champion_points_until_next_level bigint,
       last_play_time bigint,
+			region text,
       summoner_id bigint,
-      PRIMARY KEY (champion_id, summoner_id))`,
+      PRIMARY KEY (champion_id, region, summoner_id))`,
 
 		`CREATE TABLE IF NOT EXISTS personal_matches (
       lane         text,
@@ -190,9 +193,11 @@ func createSchema(db *pg.DB) error {
       masteries_updated_at timestamp with time zone DEFAULT (now() at time zone 'utc'),
       matchlist_timestamp  bigint DEFAULT 0,
       matchlist_updated_at timestamp with time zone DEFAULT (now() at time zone 'utc'),
+			region               text,
       revision_date        bigint,
+			summoner_id          bigint,
       summoner_level       int,
-      summoner_id          bigint PRIMARY KEY)`,
+			PRIMARY KEY (region, summoner_id))`,
 	}
 	queries = append(queries, createTableSql...)
 
@@ -208,39 +213,44 @@ func createSchema(db *pg.DB) error {
 
 func getSummonerMasteriesAndSave(region string, summonerName string, db *pg.DB) (err error) {
 	names := NormalizeSummonerName(summonerName)
-	summoners, err := getSummonerIdByNameAndSave(region, names, db)
+	summoners, err := getSummonerIDByNameAndSave(region, names, db)
 	if err != nil {
 		return
 	}
-	_, err = getChampionMasteriesBySummonerIdAndSave(region, summoners[0], db)
+	_, err = getChampionMasteriesBySummonerIDAndSave(region, summoners[0], db)
 	return
 }
 
-func getSummonerIdByNameAndSave(region string, names []string, db *pg.DB) (players []MySummoner, err error) {
+func getSummonerIDByNameAndSave(region string, names []string, db *pg.DB) (players []MySummoner, err error) {
 	summoners, err := apiEndpointMap[region].GetSummonerByName(names)
 	if err != nil {
-		fmt.Println("Failed to get summoners:", names, err)
+		fmt.Println("Failed to get summoners:", names, "region:", region, err)
 		err = errors.New("Summoner does not exist")
 		return
 	}
 	for _, summoner := range summoners {
 		if summoner.ID == 0 {
-			fmt.Println("Summoner not found in returning json from riot, summoner name:", names, err)
+			fmt.Println("Summoner not found in returning json from riot, summoner name:", names, "region:", region, err)
 			err = errors.New("Failed to get summoner")
+			return
+		} else if summoner.Level < 30 {
+			fmt.Println("Summoner is not level 30 yet, summoner name:", names, "region:", region)
+			err = errors.New("Summoner is not level 30")
 			return
 		}
 		s := MySummoner{
-			uint64(summoner.ID),
 			NormalizeSummonerName(summoner.Name)[0],
 			summoner.ProfileIconID,
 			time.Now().UTC(),
 			0,
 			time.Now().UTC(),
+			region,
 			uint64(summoner.RevisionDate),
+			uint64(summoner.ID),
 			summoner.Level}
 		err = db.Create(&s)
 		if err != nil {
-			fmt.Println("Failed to save summoner:", summoner.Name, "in db", err)
+			fmt.Println("Failed to save summoner:", summoner.Name, "region:", region, "in db.", err)
 			err = errors.New("Failed to save summoner")
 			return
 		}
@@ -249,10 +259,10 @@ func getSummonerIdByNameAndSave(region string, names []string, db *pg.DB) (playe
 	return
 }
 
-func getChampionMasteriesBySummonerIdAndSave(region string, summoner MySummoner, db *pg.DB) (masteries []lol.ChampionMastery, err error) {
-	masteries, err = apiEndpointMap[region].GetChampionMasteries(lol.SummonerID(summoner.SummonerId))
+func getChampionMasteriesBySummonerIDAndSave(region string, summoner MySummoner, db *pg.DB) (masteries []lol.ChampionMastery, err error) {
+	masteries, err = apiEndpointMap[region].GetChampionMasteries(lol.SummonerID(summoner.SummonerID))
 	if err != nil {
-		fmt.Println("Failed to get champion masteries for summoner:", summoner.SummonerId, err)
+		fmt.Println("Failed to get champion masteries for summoner:", summoner.SummonerID, "region:", region, err)
 		err = errors.New("Failed to get champion masteries")
 		return
 	}
@@ -265,23 +275,24 @@ func getChampionMasteriesBySummonerIdAndSave(region string, summoner MySummoner,
 			mastery.PointsSinceLastLevel,
 			mastery.PointsUntilNextLevel,
 			uint64(mastery.LastPlayTime),
+			region,
 			uint64(mastery.Player),
-		}).OnConflict("(champion_id, summoner_id) DO UPDATE").Set(`
+		}).OnConflict("(champion_id, region, summoner_id) DO UPDATE").Set(`
             champion_level = ?champion_level,
             champion_points = ?champion_points,
             champion_points_since_last_level = ?champion_points_since_last_level,
             champion_points_until_next_level = ?champion_points_until_next_level,
             last_play_time = ?last_play_time`).Create()
 		if err != nil {
-			fmt.Println("Failed to update masteries for summoner:", summoner.SummonerId, err)
+			fmt.Println("Failed to update masteries for summoner:", summoner.SummonerID, "region:", region, err)
 			err = errors.New("Failed to save champion masteries")
 			return
 		}
 	}
 	var s MySummoner
-	_, err = db.Model(&s).Set("masteries_updated_at = ?", time.Now().UTC()).Where("summoner_id = ?", summoner.SummonerId).Update()
+	_, err = db.Model(&s).Set("masteries_updated_at = ?", time.Now().UTC()).Where("summoner_id = ?", summoner.SummonerID).Update()
 	if err != nil {
-		fmt.Println("Failed to update summoner:", summoner.SummonerId, "masteries updated at time.", err)
+		fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "masteries updated at time.", err)
 		err = errors.New("Failed to update summoner masteries updated time")
 		return
 	}
@@ -295,46 +306,46 @@ func getOrCreateSummoner(region string, summonerName string, db *pg.DB) (summone
 	err = db.Model(&summoner).Where("name = ?", name).Select()
 	if err != nil {
 		if err.Error() == "pg: no rows in result set" {
-			fmt.Println("Summoner not found, lets add one with name:", summonerName)
+			fmt.Println("Summoner not found, lets add one with name:", summonerName, "region:", region)
 			err = getSummonerMasteriesAndSave(region, name, db)
 			if err != nil {
 				return
 			}
 			err = db.Model(&summoner).Where("name = ?", name).Select()
 			if err != nil {
-				fmt.Println("Failed to find summoner with name:", summonerName, err)
+				fmt.Println("Failed to find summoner with name:", summonerName, "region:", region, "in db", err)
 				err = errors.New("Failed to find summoner in db")
 				return
 			}
 			getMatchlistBySummonerIDAndSave(region, summoner, db)
 		} else {
-			fmt.Println("Failed to get summoner:", summonerName, err)
+			fmt.Println("Failed to get summoner:", summonerName, "region:", region, err)
 			err = errors.New("Failed to find summoner in db")
 			return
 		}
 	} else {
-		fmt.Println("checking is masteries or personal matches need updating...")
-		if summoner.MasteriesUpdatedAt.UTC().Add(time.Duration(60*60*24) * time.Second).Before(time.Now().UTC()) {
-			fmt.Printf("Updating masteries for Summoner: %s!\n", summoner.Name)
-			getChampionMasteriesBySummonerIdAndSave(region, summoner, db)
+		// fmt.Println("checking is masteries or personal matches need updating...")
+		if summoner.MasteriesUpdatedAt.UTC().Add(time.Duration(60*60*12) * time.Second).Before(time.Now().UTC()) {
+			fmt.Printf("Updating masteries for Summoner: %v, region: %s!\n", summoner.SummonerID, region)
+			getChampionMasteriesBySummonerIDAndSave(region, summoner, db)
 		}
 		if summoner.MatchlistUpdatedAt.UTC().Add(time.Duration(60*60*3) * time.Second).Before(time.Now().UTC()) {
-			fmt.Printf("Updating matchlist for Summoner: %s!\n", summoner.Name)
+			fmt.Printf("Updating matchlist for Summoner: %v: region: %s!\n", summoner.SummonerID, region)
 			getMatchlistBySummonerIDAndSave(region, summoner, db)
 		}
 	}
 
-	log.Println("getSummonerById", name, summoner)
+	log.Printf("getOrCreateSummoner: %+v\n", summoner)
 	return
 }
 
-func getMatchups(summoner MySummoner, enemyChampionID string, role string, db *pg.DB) (matchups []ChampionMatchup, pms []PersonalMatchup, err error) {
+func getMatchups(region string, summoner MySummoner, enemyChampionID string, role string, db *pg.DB) (matchups []ChampionMatchup, pms []PersonalMatchup, err error) {
 	//select * from champion_matchups where enemy = '57' and champion IN (select cast(champion_id as text)  from masteries where summoner_id = 26691960) order by win_rate desc;
 	// defer un(trace("get matchup"))
 	lane := strings.ToLower(role)
-	err = db.Model(&matchups).Where("role = ? AND enemy = ? AND champion IN (SELECT CAST(champion_id AS text) FROM masteries WHERE summoner_id = ?)", role, enemyChampionID, summoner.SummonerId).Order("win_rate desc").Select()
+	err = db.Model(&matchups).Where("role = ? AND enemy = ? AND champion IN (SELECT CAST(champion_id AS text) FROM masteries WHERE summoner_id = ? and region = ?)", role, enemyChampionID, summoner.SummonerID, region).Order("win_rate desc").Select()
 	if err != nil {
-		fmt.Println("Failed to get matchups from database", err)
+		fmt.Println("Failed to get matchups from database for summoner:", summoner.SummonerID, "region:", region, err)
 		err = errors.New("Failed to get championgg matchups")
 		return
 	}
@@ -364,26 +375,25 @@ func getMatchups(summoner MySummoner, enemyChampionID string, role string, db *p
       ) as g`,
 		enemyChampionID,
 		lane,
-		summoner.SummonerId,
+		summoner.SummonerID,
 		enemyChampionID,
 		lane,
-		summoner.SummonerId)
+		summoner.SummonerID)
 	log.Println(sql)
 	_, err = db.Query(&pms, sql)
 	if err != nil {
-		fmt.Println("Failed to get personal winrates for summoner:", summoner.SummonerId)
+		fmt.Println("Failed to get personal winrates for summoner:", summoner.SummonerID, "region:", region)
 		err = errors.New("Failed to get personal winrates")
 		return
 	}
 	log.Println("personal matchups:", pms)
-
 	return
 }
 
 func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.DB) (err error) {
-	matchList, err := apiEndpointMap[region].GetMatchlist(summoner.SummonerId, summoner.MatchlistTimestamp)
+	matchList, err := apiEndpointMap[region].GetMatchlist(summoner.SummonerID, summoner.MatchlistTimestamp)
 	if err != nil {
-		fmt.Println("Failed to get matchlist for summoner:", summoner.SummonerId, err)
+		fmt.Println("Failed to get matchlist for summoner:", summoner.SummonerID, "region:", region, err)
 		return
 	}
 
@@ -391,12 +401,13 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 		summoner.UpdateMatchlistUpdatedAt()
 		err = updateMatchlistUpdatedAt(summoner)
 		if err != nil {
-			fmt.Println("Failed to update summoner:", summoner.SummonerId, "matchlist updated at time.", err)
+			fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "matchlist updated at time.", err)
+			err = errors.New("Failed to update matchlist updated at time")
 		}
 		return
 	}
 
-	fmt.Printf("Going to determine the winners and losers for %d matches\n", len(matchList.Matches))
+	fmt.Printf("Going to determine the winners and losers for 50/%d matches for summoner: %v, region: %s.\n", len(matchList.Matches), summoner.SummonerID, region)
 	ids := ""
 	for i, m := range matchList.Matches {
 		ids += fmt.Sprintf("(%v)", m.MatchId)
@@ -416,7 +427,8 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	matchIDs := make(sortutil.Uint64Slice, 0)
 	_, err = db.Query(&matchIDs, sql)
 	if err != nil {
-		fmt.Println("Failed to get list of un-generated personal matches from db for summoner:", summoner.SummonerId, err)
+		fmt.Println("Failed to get list of un-generated personal matches from db for summoner:", summoner.SummonerID, "region:", region, err)
+		err = errors.New("Failed to get un-generated personal matches")
 		return
 	}
 	log.Println("matchIDs:", matchIDs)
@@ -432,40 +444,41 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 			if matchIDsCount >= 50 {
 				break
 			}
-			matchIDsCount++
 
 			game, err := apiEndpointMap[region].GetMatch(m.MatchId, false)
 			if err != nil {
-				fmt.Println("Failed to get ranked game:", m.MatchId, "for summoner:", summoner.SummonerId, err)
+				fmt.Println("Failed to get ranked game:", m.MatchId, "for summoner:", summoner.SummonerID, "region:", region, err)
 				if err.Error() == "Too Many request to server" {
 					if m.Timestamp < matchlistUpdatedTimestamp {
 						matchlistUpdatedTimestamp = m.Timestamp
 					}
+					matchIDsCount++
 				}
 				continue
 			}
+			matchIDsCount++
 			var pmToInsert []PersonalMatch
 			winnerLosers := generateMatchups(game)
 			for _, w := range winnerLosers {
-				if w.LoserChampionId == "" || w.LoserSummonerId == 0 || w.WinnerChampionId == "" || w.WinnerSummonerId == 0 {
+				if w.LoserChampionID == "" || w.LoserSummonerID == 0 || w.WinnerChampionID == "" || w.WinnerSummonerID == 0 {
 					continue
 				}
 				pmToInsert = append(pmToInsert, PersonalMatch{
 					w.Lane,
-					w.LoserChampionId,
-					w.LoserSummonerId,
+					w.LoserChampionID,
+					w.LoserSummonerID,
 					m.MatchId,
 					m.PlatformId,
 					m.Queue,
 					m.Region,
 					m.Season,
 					m.Timestamp,
-					w.WinnerChampionId,
-					w.WinnerSummonerId})
+					w.WinnerChampionID,
+					w.WinnerSummonerID})
 			}
 			_, err = db.Model(&pmToInsert).OnConflict("DO NOTHING").Create()
 			if err != nil {
-				fmt.Println("failed to bulk insert personal matches for match:", m.MatchId, err)
+				fmt.Println("failed to bulk insert personal matches for match:", m.MatchId, "summoner:", summoner.SummonerID, "region:", region, err)
 				continue
 			}
 		} else {
@@ -481,7 +494,8 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	summoner.UpdateMatchlistTimestamp(matchlistUpdatedTimestamp)
 	err = updateSummonerMatchlistData(summoner)
 	if err != nil {
-		fmt.Println("Failed to update summoner:", summoner.SummonerId, "matchlist updated at time.", err)
+		fmt.Println("Failed to update summoner:", summoner.SummonerID, "region:", region, "matchlist updated at time.", err)
+		err = errors.New("Failed to update matchlist updated at time")
 		return
 	}
 	return nil
@@ -489,13 +503,13 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 
 func updateMatchlistUpdatedAt(summoner MySummoner) (err error) {
 	var s MySummoner
-	_, err = db.Model(&s).Set("matchlist_updated_at = ?", s.MatchlistUpdatedAt).Where("summoner_id = ?", summoner.SummonerId).Update()
+	_, err = db.Model(&s).Set("matchlist_updated_at = ?", s.MatchlistUpdatedAt).Where("summoner_id = ?", summoner.SummonerID).Update()
 	return
 }
 
 func updateSummonerMatchlistData(summoner MySummoner) (err error) {
 	var s MySummoner
-	_, err = db.Model(&s).Set("matchlist_updated_at = ?, matchlist_timestamp = ?", summoner.MatchlistUpdatedAt, summoner.MatchlistTimestamp).Where("summoner_id = ?", summoner.SummonerId).Update()
+	_, err = db.Model(&s).Set("matchlist_updated_at = ?, matchlist_timestamp = ?", summoner.MatchlistUpdatedAt, summoner.MatchlistTimestamp).Where("summoner_id = ?", summoner.SummonerID).Update()
 	return
 }
 
@@ -565,11 +579,11 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 						i = int(math.Mod(float64(i), 5))
 						winnerLosers[i].Lane = l[:colonIndex]
 						if p.Stat.Winner {
-							winnerLosers[i].WinnerSummonerId = pl.Player.SummonerId
-							winnerLosers[i].WinnerChampionId = l[colonIndex+1:]
+							winnerLosers[i].WinnerSummonerID = pl.Player.SummonerId
+							winnerLosers[i].WinnerChampionID = l[colonIndex+1:]
 						} else {
-							winnerLosers[i].LoserSummonerId = pl.Player.SummonerId
-							winnerLosers[i].LoserChampionId = l[colonIndex+1:]
+							winnerLosers[i].LoserSummonerID = pl.Player.SummonerId
+							winnerLosers[i].LoserChampionID = l[colonIndex+1:]
 						}
 					}
 				}
