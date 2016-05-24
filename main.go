@@ -33,7 +33,7 @@ type MatchupResults struct {
 	Prefix        string
 	Role          string
 	SummonerName  string
-	Matchups      []ChampionMatchup
+	Matchups      []ChampionGGMatchup
 	ResultsLength int
 }
 

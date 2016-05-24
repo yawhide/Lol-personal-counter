@@ -35,7 +35,6 @@
       </div>
 
       {{else}}
-
     	<div class="row enemy" id="infoFoundDisplay">
 	    	<div class="col-sm-offset-3 col-sm-3 col-md-offset-4 col-md-2 text-center enemyimg">
 	    		<img src="http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/{{.Enemy}}.png">
@@ -83,7 +82,7 @@
           </thead>
           <tbody>
             {{ range .Matchups }}
-            <tr>
+            <tr id="champion-level-{{.ChampionLevel}}">
               <th>
                 <img src="http://ddragon.leagueoflegends.com/cdn/6.10.1/img/champion/{{.Champion}}.png" height="40">
                 <a href="http://champion.gg/champion/{{.Champion}}/{{.Role}}" target="_blank" class="padding-left-10">
@@ -118,6 +117,11 @@
             {{ end }}
           </tbody>
         </table>
+        <div class="switch-label">Show inexperienced champions</div>
+        <label class="switch">
+          <input type="checkbox" checked="true">
+          <div class="slider round"></div>
+        </label>
   	  </div>
 
       {{end}}

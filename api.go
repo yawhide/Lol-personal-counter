@@ -37,14 +37,14 @@ var CHAMPION_KEYS_BY_KEY_PROPER_CASING = map[string]string{"35": "Shaco", "36": 
 var apiEndpointMap map[string]*lol.APIEndpoint
 
 type Mastery struct {
-	ChampionID                   int    `json:"championId", sql:",pk"`
-	ChampionLevel                int    `json:"championLevel"`
-	ChampionPoints               int    `json:"championPoints"`
-	ChampionPointsSinceLastLevel int    `json:"championPointsSinceLastLevel"`
-	ChampionPointsUntilNextLevel int    `json:"championPointsUntilNextLevel"`
-	LastPlayTime                 uint64 `json:"lastPlayTime"`
+	Champion                     string `sql:",pk"`
+	ChampionLevel                int
+	ChampionPoints               int
+	ChampionPointsSinceLastLevel int
+	ChampionPointsUntilNextLevel int
+	LastPlayTime                 uint64
 	Region                       string `sql:",pk"`
-	SummonerID                   uint64 `json:"playerId", sql:",pk"`
+	SummonerID                   uint64 `sql:",pk"`
 }
 
 type RiotError struct {
@@ -56,15 +56,15 @@ func (err RiotError) Error() string {
 }
 
 type MySummoner struct {
-	Name               string `json:"name"`
-	ProfileIconID      int    `json:"profileIconId"`
+	Name               string
+	ProfileIconID      int
 	MasteriesUpdatedAt time.Time
 	MatchlistTimestamp uint64
 	MatchlistUpdatedAt time.Time
 	Region             string `sql:",pk"`
-	RevisionDate       uint64 `json:"revisionDate"`
-	SummonerID         uint64 `json:"id", sql:",pk"`
-	SummonerLevel      uint32 `json:"summonerLevel"`
+	RevisionDate       uint64
+	SummonerID         uint64 `sql:",pk"`
+	SummonerLevel      uint32
 }
 
 func (s *MySummoner) SetSummoner(name string) {
@@ -86,10 +86,10 @@ type ChampionMatchupWinrate struct {
 }
 
 type Matchup struct {
-	Games     int     `json:"games"`
-	StatScore float32 `json:"statScore"`
-	WinRate   float32 `json:"winRate"`
-	Enemy     string  `json:"key"`
+	Games     int
+	StatScore float32
+	WinRate   float32
+	Enemy     string
 }
 
 type ChampionMatchup struct {
@@ -103,15 +103,22 @@ type ChampionMatchup struct {
 	PersonalGames   int
 }
 
-func (c *ChampionMatchup) SetChampion(name string) {
+type ChampionGGMatchup struct {
+	Champion        string `sql:",pk"`
+	Enemy           string `sql:",pk"`
+	Games           int
+	Role            string `sql:",pk"`
+	WinRate         float32
+	ChampionLevel   int
+	PersonalWinRate string
+	PersonalGames   int
+}
+
+func (c *ChampionGGMatchup) SetChampion(name string) {
 	c.Champion = name
 }
 
-func (m ChampionMatchup) String() string {
-	return fmt.Sprintf("[%s] %s vs %s. %g %d games\n", m.Role, CHAMPION_KEYS_BY_KEY[m.Champion], CHAMPION_KEYS_BY_KEY[m.Enemy], m.WinRate, m.Games)
-}
-
-func (c *ChampionMatchup) UpdatePersonalData(p PersonalMatchup) {
+func (c *ChampionGGMatchup) UpdatePersonalData(p PersonalMatchup) {
 	c.PersonalWinRate = strings.TrimSuffix(fmt.Sprintf("%0.2f", p.WinRate), ".00")
 	c.PersonalGames = p.Games
 }
@@ -163,7 +170,7 @@ func createSchema(db *pg.DB) error {
       PRIMARY KEY(champion, enemy, role))`,
 
 		`CREATE TABLE IF NOT EXISTS masteries (
-      champion_id bigint,
+      champion text,
       champion_level int,
       champion_points int,
       champion_points_since_last_level bigint,
@@ -171,7 +178,7 @@ func createSchema(db *pg.DB) error {
       last_play_time bigint,
 			region text,
       summoner_id bigint,
-      PRIMARY KEY (champion_id, region, summoner_id))`,
+      PRIMARY KEY (champion, region, summoner_id))`,
 
 		`CREATE TABLE IF NOT EXISTS personal_matches (
       lane         text,
@@ -269,7 +276,7 @@ func getChampionMasteriesBySummonerIDAndSave(region string, summoner MySummoner,
 
 	for _, mastery := range masteries {
 		_, err = db.Model(&Mastery{
-			int(mastery.Champion),
+			fmt.Sprintf("%v", mastery.Champion),
 			mastery.Level,
 			mastery.Points,
 			mastery.PointsSinceLastLevel,
@@ -277,7 +284,7 @@ func getChampionMasteriesBySummonerIDAndSave(region string, summoner MySummoner,
 			uint64(mastery.LastPlayTime),
 			region,
 			uint64(mastery.Player),
-		}).OnConflict("(champion_id, region, summoner_id) DO UPDATE").Set(`
+		}).OnConflict("(champion, region, summoner_id) DO UPDATE").Set(`
             champion_level = ?champion_level,
             champion_points = ?champion_points,
             champion_points_since_last_level = ?champion_points_since_last_level,
@@ -340,11 +347,20 @@ func getOrCreateSummoner(region string, summonerName string, db *pg.DB) (summone
 	return
 }
 
-func getMatchups(region string, summoner MySummoner, enemyChampionID string, role string, db *pg.DB) (matchups []ChampionMatchup, pms []PersonalMatchup, err error) {
+func getMatchups(region string, summoner MySummoner, enemyChampionID string, role string, db *pg.DB) (matchups []ChampionGGMatchup, pms []PersonalMatchup, err error) {
 	//select * from champion_matchups where enemy = '57' and champion IN (select cast(champion_id as text)  from masteries where summoner_id = 26691960) order by win_rate desc;
 	// defer un(trace("get matchup"))
 	lane := strings.ToLower(role)
-	err = db.Model(&matchups).Where("role = ? AND enemy = ? AND champion IN (SELECT CAST(champion_id AS text) FROM masteries WHERE summoner_id = ? and region = ?)", role, enemyChampionID, summoner.SummonerID, region).Order("win_rate desc").Select()
+	// err = db.Model(&matchups).Where("role = ? AND enemy = ? AND champion IN (SELECT champion FROM masteries WHERE summoner_id = ? and region = ?)", role, enemyChampionID, summoner.SummonerID, region).Order("win_rate desc").Select()
+	getMatchupSQL := fmt.Sprintf(
+		`
+		SELECT champion, enemy, games, role, win_rate, champion_level FROM (SELECT * FROM champion_matchups WHERE role = '%s' AND enemy = '%s') a NATURAL JOIN (SELECT * FROM masteries WHERE summoner_id = %v AND region = '%s') b ORDER BY win_rate DESC;`,
+		role,
+		enemyChampionID,
+		summoner.SummonerID,
+		region)
+	log.Println(getMatchupSQL)
+	_, err = db.Query(&matchups, getMatchupSQL)
 	if err != nil {
 		fmt.Println("Failed to get matchups from database for summoner:", summoner.SummonerID, "region:", region, err)
 		err = errors.New("Failed to get championgg matchups")
