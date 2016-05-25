@@ -9,5 +9,6 @@
   "riot": {
     "key": "**enter riot key here**"
   },
-  "urlPrefix": "/"
+  "urlPrefix": "/",
+  "logging": true
 }

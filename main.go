@@ -119,6 +119,9 @@ func main() {
 	http.HandleFunc(urlPrefix+"analytics/index", AnalyzeIndex)
 	http.HandleFunc(urlPrefix+"analytics/matchup", AnalyzeMatchup)
 	http.HandleFunc(urlPrefix+"analytics/external", AnalyzeExternalLink)
+
+	//TODO start just generating every matchup
+
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		panic(err)

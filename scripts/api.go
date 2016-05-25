@@ -142,34 +142,6 @@ func createSchema(db *pg.DB) error {
             stat_score decimal,
             win_rate decimal,
             PRIMARY KEY(champion, enemy, role))`,
-
-		`CREATE TABLE IF NOT EXISTS masteries (
-            champion_id bigint,
-            champion_level int,
-            champion_points int,
-            champion_points_since_last_level bigint,
-            champion_points_until_next_level bigint,
-            last_play_time bigint,
-            summoner_id bigint,
-            PRIMARY KEY (champion_id, summoner_id))`,
-
-		`CREATE TABLE IF NOT EXISTS my_summoners (
-            name text,
-            profile_icon_id int,
-            masteries_updated_at timestamp with time zone DEFAULT (now() at time zone 'utc'),
-            revision_date bigint,
-            summoner_level int,
-            summoner_id bigint PRIMARY KEY)`,
-
-		`CREATE OR REPLACE FUNCTION upsert_masteries(c_id bigint, c_lv int, c_pts int, c_pts_since_last_lv bigint, c_pts_until_next_lv bigint, last_play_t bigint, s_id bigint) RETURNS VOID AS $$
-            DECLARE
-            BEGIN
-                UPDATE masteries SET champion_id = c_id, champion_level = c_lv, champion_points = c_pts, champion_points_since_last_level = c_pts_since_last_lv, champion_points_until_next_level = c_pts_until_next_lv, last_play_time = last_play_t, summoner_id = s_id WHERE champion_id = c_id AND summoner_id = s_id;
-                IF NOT FOUND THEN
-                INSERT INTO masteries VALUES (c_id, c_lv, c_pts, c_pts_since_last_lv, c_pts_until_next_lv, last_play_t, s_id);
-                END IF;
-            END;
-            $$ LANGUAGE 'plpgsql'`,
 	}
 	// fmt.Println("hey", queries, createTableSql)
 	queries = append(queries, createTableSql...)

@@ -424,7 +424,7 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 		return
 	}
 
-	fmt.Printf("Going to determine the winners and losers for 50/%d matches for summoner: %v, region: %s.\n", len(matchList.Matches), summoner.SummonerID, region)
+	fmt.Printf("Going to determine the winners and losers for %d matches for summoner: %v, region: %s.\n", len(matchList.Matches), summoner.SummonerID, region)
 	ids := ""
 	for i, m := range matchList.Matches {
 		ids += fmt.Sprintf("(%v)", m.MatchId)
@@ -450,7 +450,7 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	}
 	log.Println("matchIDs:", matchIDs)
 	matchIDs.Sort()
-	matchIDsCount := 0
+	// matchIDsCount := 0
 	var matchlistUpdatedTimestamp uint64 = math.MaxUint64
 	for _, m := range matchList.Matches {
 		index := sortutil.SearchUint64s(matchIDs, m.MatchId)
@@ -458,9 +458,9 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 			continue
 		} else if uint64(matchIDs[index]) == m.MatchId {
 			log.Println("analyzing game:", m.MatchId)
-			if matchIDsCount >= 50 {
-				break
-			}
+			// if matchIDsCount >= 100 {
+			// 	break
+			// }
 
 			game, err := apiEndpointMap[region].GetMatch(m.MatchId, false)
 			if err != nil {
@@ -469,11 +469,11 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 					if m.Timestamp < matchlistUpdatedTimestamp {
 						matchlistUpdatedTimestamp = m.Timestamp
 					}
-					matchIDsCount++
+					// matchIDsCount++
 				}
 				continue
 			}
-			matchIDsCount++
+			// matchIDsCount++
 			var pmToInsert []PersonalMatch
 			winnerLosers := generateMatchups(game)
 			for _, w := range winnerLosers {
