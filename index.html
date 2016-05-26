@@ -2,18 +2,17 @@
 <html lang="en">
   <head>
     <title>LoL Personal Counters</title>
-    <link type="text/plain" rel="author" href="{{.Prefix}}humans.txt" />
-    <link rel="stylesheet" type="text/css" href="{{.Prefix}}static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{{.Prefix}}static/css/awesomplete.css" />
-    <link rel="stylesheet" type="text/css" href="{{.Prefix}}static/css/style.css">
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Lol Personal Counter finds your personal counter picks based on champions you have placed in ranked.">
     <meta property="og:title" content="Lol Personal Counter" />
     <meta property="og:description" content="Lol Personal Counter finds your personal counter picks based on champions you have placed in ranked.">
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="http://yawhide.com/lol-personal-counter/" />
-    <meta property="og:image" content="http://yawhide.com/lol-personal-counter/static/img/og.png" />
+    <meta property="og:url" content="https://personalcounters.com" />
+    <meta property="og:image" content="https://personalcounters.com/static/img/og.png" />
+    <link type="text/plain" rel="author" href="{{.Prefix}}humans.txt" />
+    <link rel="stylesheet" type="text/css" href="{{.Prefix}}static/dist/css/style.min.css">
+    <link rel="icon" href="favicon.ico?" type="image/x-icon">
   </head>
   <body>
 
@@ -37,13 +36,13 @@
           <!-- <p class="alert alert-info">
             This may take a while, please be patient!
           </p> -->
-          <img class="spinner" src="{{.Prefix}}static/img/spinner.gif">
+          <img class="spinner" src="{{.Prefix}}static/img/spinner.gif" alt="Loading results spinner">
         </div>
         <form action="{{.Prefix}}matchup" method="post">
           <div class="form-group">
             <label for="name">Summoner Name</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="name" name="name" placeholder="Name" aria-describedby="basic-addon1">
+              <input type="text" class="form-control" id="name" name="name" placeholder="Name" >
               <input type="hidden" id="region" name="region" value="NA">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">NA<span class="caret"></span></button>
@@ -65,8 +64,8 @@
           </div>
           <div class="form-group">
             <label for="enemy">Enemy Champion</label>
-            <!-- <input type="text" class="form-control" id="enemy" name="enemy" placeholder="Enemy" aria-describedby="basic-addon1"> -->
-            <input data-list="Aatrox,Ahri,Akali,Alistar,Amumu,Anivia,Annie,Ashe,Aurelion Sol,Azir,Bard,Blitzcrank,Brand,Braum,Caitlyn,Cassiopeia,Chogath,Corki,Darius,Diana,Draven,Dr. Mundo,Ekko,Elise,Evelynn,Ezreal,Fiddlesticks,Fiora,Fizz,Galio,Gangplank,Garen,Gnar,Gragas,Graves,Hecarim,Heimerdinger,Illaoi,Irelia,Janna,Jarvaniv,Jax,Jayce,Jhin,Jinx,Kalista,Karma,Karthus,Kassadin,Katarina,Kayle,Kennen,Khazix,Kindred,Kogmaw,Leblanc,Lee Sin,Leona,Lissandra,Lucian,Lulu,Lux,Malphite,Malzahar,Maokai,Master Yi,Miss Fortune,Monkeyking,Mordekaiser,Morgana,Nami,Nasus,Nautilus,Nidalee,Nocturne,Nunu,Olaf,Orianna,Pantheon,Poppy,Quinn,Rammus,Reksai,Renekton,Rengar,Riven,Rumble,Ryze,Sejuani,Shaco,Shen,Shyvana,Singed,Sion,Sivir,Skarner,Sona,Soraka,Swain,Syndra,Tahm Kench,Taliyah,Talon,Taric,Teemo,Thresh,Tristana,Trundle,Tryndamere,Twisted Fate,Twitch,Udyr,Urgot,Varus,Vayne,Veigar,Velkoz,Vi,Viktor,Vladimir,Volibear,Warwick,Wukong,Xerath,Xin Zhao,Yasuo,Yorick,Zac,Zed,Ziggs,Zilean,Zyra" type="text" class="awesomplete form-control" id="enemy" name="enemy" placeholder="Enemy" aria-describedby="basic-addon1" autocomplete="off">
+            <!-- <input type="text" class="form-control" id="enemy" name="enemy" placeholder="Enemy" > -->
+            <input data-list="Aatrox,Ahri,Akali,Alistar,Amumu,Anivia,Annie,Ashe,Aurelion Sol,Azir,Bard,Blitzcrank,Brand,Braum,Caitlyn,Cassiopeia,Chogath,Corki,Darius,Diana,Draven,Dr. Mundo,Ekko,Elise,Evelynn,Ezreal,Fiddlesticks,Fiora,Fizz,Galio,Gangplank,Garen,Gnar,Gragas,Graves,Hecarim,Heimerdinger,Illaoi,Irelia,Janna,Jarvaniv,Jax,Jayce,Jhin,Jinx,Kalista,Karma,Karthus,Kassadin,Katarina,Kayle,Kennen,Khazix,Kindred,Kogmaw,Leblanc,Lee Sin,Leona,Lissandra,Lucian,Lulu,Lux,Malphite,Malzahar,Maokai,Master Yi,Miss Fortune,Monkeyking,Mordekaiser,Morgana,Nami,Nasus,Nautilus,Nidalee,Nocturne,Nunu,Olaf,Orianna,Pantheon,Poppy,Quinn,Rammus,Reksai,Renekton,Rengar,Riven,Rumble,Ryze,Sejuani,Shaco,Shen,Shyvana,Singed,Sion,Sivir,Skarner,Sona,Soraka,Swain,Syndra,Tahm Kench,Taliyah,Talon,Taric,Teemo,Thresh,Tristana,Trundle,Tryndamere,Twisted Fate,Twitch,Udyr,Urgot,Varus,Vayne,Veigar,Velkoz,Vi,Viktor,Vladimir,Volibear,Warwick,Wukong,Xerath,Xin Zhao,Yasuo,Yorick,Zac,Zed,Ziggs,Zilean,Zyra" type="text" class="awesomplete form-control" id="enemy" name="enemy" placeholder="Enemy"  autocomplete="off">
           </div>
 
           <div class="form-group">
@@ -79,7 +78,7 @@
               <option value="Support">Support</option>
             </select>
           </div>
-          <div class="checkbox" id="save">
+          <div class="checkbox">
             <label>
               <input type="checkbox" id="save" name="save"> Save Summoner Name
             </label>
@@ -97,11 +96,8 @@
         </p>
       </div>
     </div>
-    <script type="text/javascript" src="{{.Prefix}}static/js/awesomplete.min.js"></script>
-    <script type="text/javascript" src="{{.Prefix}}static/js/promise.min.js"></script>
-    <script type="text/javascript" src="{{.Prefix}}static/js/fetch.min.js"></script>
+    <script type="text/javascript" src="{{.Prefix}}static/dist/js/scripts.min.js"></script>
     <script type="text/javascript">var urlPrefix = "{{.Prefix}}"</script>
-    <script type="text/javascript" src="{{.Prefix}}static/js/index.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

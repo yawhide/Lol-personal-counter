@@ -5,8 +5,8 @@
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-<url>
-  <loc>http://yawhide.com/lol-personal-counter/</loc>
-  <changefreq>weekly</changefreq>
-</url>
+  <url>
+    <loc>https://personalcounters.com/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset>

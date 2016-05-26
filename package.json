@@ -1,0 +1,26 @@
+{
+  "name": "personalcounters",
+  "version": "1.0.0",
+  "description": "Submission for the Riot April 2016 api challenge, the `Riot2016Submission` branch is for you while the master branch will be our on going effect to improve this website.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yawhide/Lol-personal-counter.git"
+  },
+  "author": "github.com/yawhide",
+  "bugs": {
+    "url": "https://github.com/yawhide/Lol-personal-counter/issues"
+  },
+  "homepage": "https://github.com/yawhide/Lol-personal-counter#readme"
+}
