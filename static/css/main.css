@@ -57,7 +57,7 @@ h1{
 
 .header{
 	color: #000;
-	background: url("../../img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
+	background: url("/static/img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
 	b-webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -76,7 +76,7 @@ h1{
 
 .header{
 	color: #fff;
-	background: url("../img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
+	background: url("/static/img/poolparty_wallpaper-e.jpg") no-repeat bottom center;
 	b-webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;

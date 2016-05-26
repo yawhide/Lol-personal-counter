@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
-var minifyCSS = require('gulp-minify-css');
+var cleanCSS = require('gulp-clean-css');
 
 gulp.task('default', function () {
    // Your default task
@@ -17,9 +17,15 @@ gulp.task('scripts', function() {
 })
 
 gulp.task('css', function(){
+  return gulp.src(['./static/css/awesomplete.css', './static/css/main.css'])
+      .pipe(concat('style.css'))
+      .pipe(rename('style.min.css'))
+      .pipe(cleanCSS())
+      .pipe(gulp.dest('static/dist/css'))
+})
 
-  return gulp.src(['./static/css/bootstrap.min.css', './static/css/awesomplete.min.css', './static/css/style.css'])
+gulp.task('concat-css', function() {
+  return gulp.src(['./static/css/bootstrap.min.css', './static/dist/css/style.min.css'])
       .pipe(concat('style.min.css'))
-      .pipe(minifyCSS())
       .pipe(gulp.dest('static/dist/css'))
 })

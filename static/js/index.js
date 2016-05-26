@@ -50,7 +50,7 @@ if ($form) {
     var status;
     var now = new Date();
 
-    fetch(urlPrefix + 'matchup', {
+    fetch('/matchup', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -86,11 +86,11 @@ if ($form) {
           document.querySelector('.response').insertAdjacentHTML('afterbegin', body);
           loadMatchupHandlers();
 
-          ga('send', 'pageview', '/lol-personal-counter/matchup');
+          ga('send', 'pageview', '/matchup');
         }
       });
 
-    fetch(urlPrefix + 'analytics/index', {
+    fetch('/analytics/index', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -127,7 +127,7 @@ if ($form) {
 
 if ($yawhideLink) {
   $yawhideLink.onclick = function (e) {
-    fetch(urlPrefix + 'analytics/external', {
+    fetch('/analytics/external', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -192,7 +192,7 @@ function loadMatchupHandlers() {
 
   for (var i = 0; i < $championGGLinks.length; i++) {
     $championGGLinks[i].onclick = function (e) {
-      fetch(urlPrefix + 'analytics/matchup', {
+      fetch('/analytics/matchup', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

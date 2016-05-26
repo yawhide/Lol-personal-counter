@@ -10,5 +10,6 @@
     "key": "**enter riot key here**"
   },
   "urlPrefix": "/",
-  "logging": true
+  "logging": true,
+  "production": false
 }

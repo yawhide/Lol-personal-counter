@@ -16,11 +16,13 @@ import (
 
 var db *pg.DB
 var urlPrefix string
+var production bool
 var championToRoleMapping = map[string][]string{}
 
 type IndexResult struct {
-	Prefix string
-	Error  error
+	Prefix     string
+	Error      error
+	Production bool
 }
 
 type ChampionRoleMapping struct {
@@ -35,6 +37,7 @@ type MatchupResults struct {
 	SummonerName  string
 	Matchups      []ChampionGGMatchup
 	ResultsLength int
+	Production    bool
 }
 
 type MatchupPostData struct {
@@ -73,6 +76,7 @@ func main() {
 	} else {
 		log.SetOutput(ioutil.Discard)
 	}
+	production = viper.GetBool("production")
 
 	db = pg.Connect(&pg.Options{
 		User:     username,
@@ -137,7 +141,7 @@ func serveSingle(pattern string, filename string) {
 func Index(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		defer un(trace("/ "))
-		result := IndexResult{urlPrefix, nil}
+		result := IndexResult{urlPrefix, nil, production}
 		t, _ := template.ParseFiles("index.html")
 		a := AnalyticsPage{"/", r.Referer(), time.Now().UTC()}
 		err := db.Create(&a)
@@ -216,7 +220,7 @@ func GetMatchup(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		// fmt.Println(CHAMPION_KEYS_BY_KEY_PROPER_CASING[CHAMPION_KEYS[enemy]], urlPrefix, m.Role, summonerName, matchups)
-		result := MatchupResults{CHAMPION_KEYS_BY_KEY_PROPER_CASING[CHAMPION_KEYS[m.Enemy]], urlPrefix, m.Role, m.OriginalSummonerName, matchups, len(matchups)}
+		result := MatchupResults{CHAMPION_KEYS_BY_KEY_PROPER_CASING[CHAMPION_KEYS[m.Enemy]], urlPrefix, m.Role, m.OriginalSummonerName, matchups, len(matchups), production}
 		t, _ := template.ParseFiles("matchups.html")
 		t.Execute(w, result)
 		// json.NewEncoder(w).Encode(result)
