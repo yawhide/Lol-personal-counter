@@ -127,8 +127,8 @@ type PersonalMatch struct {
 	Lane             string
 	LoserChampionID  string
 	LoserSummonerID  uint64 `sql:",pk"`
-	MatchId          uint64 `sql:",pk"`
-	PlatformId       string
+	MatchID          uint64 `sql:",pk"`
+	PlatformID       string
 	QueueType        string
 	Region           string `sql:",pk"`
 	Season           string
@@ -427,7 +427,7 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	fmt.Printf("Going to determine the winners and losers for %d matches for summoner: %v, region: %s.\n", len(matchList.Matches), summoner.SummonerID, region)
 	ids := ""
 	for i, m := range matchList.Matches {
-		ids += fmt.Sprintf("(%v)", m.MatchId)
+		ids += fmt.Sprintf("(%v)", m.MatchID)
 		if i < len(matchList.Matches)-1 {
 			ids += ", "
 		}
@@ -453,18 +453,18 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 	// matchIDsCount := 0
 	var matchlistUpdatedTimestamp uint64 = math.MaxUint64
 	for _, m := range matchList.Matches {
-		index := sortutil.SearchUint64s(matchIDs, m.MatchId)
+		index := sortutil.SearchUint64s(matchIDs, m.MatchID)
 		if index >= len(matchIDs) {
 			continue
-		} else if uint64(matchIDs[index]) == m.MatchId {
-			log.Println("analyzing game:", m.MatchId)
+		} else if uint64(matchIDs[index]) == m.MatchID {
+			log.Println("analyzing game:", m.MatchID)
 			// if matchIDsCount >= 100 {
 			// 	break
 			// }
 
-			game, err := apiEndpointMap[region].GetMatch(m.MatchId, false)
+			game, err := apiEndpointMap[region].GetMatch(m.MatchID, false)
 			if err != nil {
-				fmt.Println("Failed to get ranked game:", m.MatchId, "for summoner:", summoner.SummonerID, "region:", region, err)
+				fmt.Println("Failed to get ranked game:", m.MatchID, "for summoner:", summoner.SummonerID, "region:", region, err)
 				if err.Error() == "Too Many request to server" {
 					if m.Timestamp < matchlistUpdatedTimestamp {
 						matchlistUpdatedTimestamp = m.Timestamp
@@ -484,8 +484,8 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 					w.Lane,
 					w.LoserChampionID,
 					w.LoserSummonerID,
-					m.MatchId,
-					m.PlatformId,
+					m.MatchID,
+					m.PlatformID,
 					m.Queue,
 					m.Region,
 					m.Season,
@@ -495,7 +495,7 @@ func getMatchlistBySummonerIDAndSave(region string, summoner MySummoner, db *pg.
 			}
 			_, err = db.Model(&pmToInsert).OnConflict("DO NOTHING").Create()
 			if err != nil {
-				fmt.Println("failed to bulk insert personal matches for match:", m.MatchId, "summoner:", summoner.SummonerID, "region:", region, err)
+				fmt.Println("failed to bulk insert personal matches for match:", m.MatchID, "summoner:", summoner.SummonerID, "region:", region, err)
 				continue
 			}
 		} else {
@@ -570,8 +570,8 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 		t := fmt.Sprintf("%s:%s:%d",
 			p.Timeline.Role,
 			p.Timeline.Lane,
-			p.ChampionId)
-		if p.TeamId == 100 {
+			p.ChampionID)
+		if p.TeamID == 100 {
 			team1Strings = append(team1Strings, t)
 		} else {
 			team2Strings = append(team2Strings, t)
@@ -580,8 +580,8 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 	sort.Strings(team1Strings)
 	sort.Strings(team2Strings)
 	log.Println("Team strings:", team1Strings, team2Strings)
-	lanes1 := checkTemplate(team1Strings, game.MatchId)
-	lanes2 := checkTemplate(team2Strings, game.MatchId)
+	lanes1 := checkTemplate(team1Strings, game.MatchID)
+	lanes2 := checkTemplate(team2Strings, game.MatchID)
 	sort.Strings(lanes1)
 	sort.Strings(lanes2)
 	log.Println("Lanes:", lanes1, lanes2)
@@ -590,16 +590,16 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 		colonIndex := strings.LastIndex(l, ":")
 		champID, _ := strconv.Atoi(l[colonIndex+1:])
 		for _, p := range game.Participants {
-			if champID == p.ChampionId {
+			if champID == p.ChampionID {
 				for _, pl := range game.ParticipantIdentities {
-					if pl.ParticipantId == p.ParticipantId {
+					if pl.ParticipantID == p.ParticipantID {
 						i = int(math.Mod(float64(i), 5))
 						winnerLosers[i].Lane = l[:colonIndex]
 						if p.Stat.Winner {
-							winnerLosers[i].WinnerSummonerID = pl.Player.SummonerId
+							winnerLosers[i].WinnerSummonerID = pl.Player.SummonerID
 							winnerLosers[i].WinnerChampionID = l[colonIndex+1:]
 						} else {
-							winnerLosers[i].LoserSummonerID = pl.Player.SummonerId
+							winnerLosers[i].LoserSummonerID = pl.Player.SummonerID
 							winnerLosers[i].LoserChampionID = l[colonIndex+1:]
 						}
 					}
@@ -611,7 +611,7 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 	return
 }
 
-func checkTemplate(teamStrings []string, matchId uint64) []string {
+func checkTemplate(teamStrings []string, matchID uint64) []string {
 	lanes := []string{}
 	bestNumMatches := -1
 	for i := 0; i < len(GAME_TEMPLATES); i += 2 {
@@ -702,7 +702,7 @@ func checkTemplate(teamStrings []string, matchId uint64) []string {
 			lanes = tmpLanes
 		}
 	}
-	fmt.Println("ERROR, match_id:", matchId)
+	fmt.Println("ERROR, match_id:", matchID)
 	for _, p := range teamStrings {
 		lastColon := strings.LastIndex(p, ":")
 		fmt.Println(p[:lastColon+1]+CHAMPION_KEYS_BY_KEY[p[lastColon+1:]], p[lastColon+1:], championToRoleMapping[p[lastColon+1:]])

@@ -205,33 +205,6 @@ func init() {
 
 }
 
-/*
-Participants []struct {
-    Stat struct {
-        Winner bool
-    }
-    Timeline struct {
-        Role string
-        Lane string
-    }
-    ParticipantId int
-    ChampionID    int
-    TeamId        int
-}
-ParticipantIdentities []struct {
-    Player struct {
-        SummonerID uint64
-    }
-    ParticipantId int
-}
-Teams []struct {
-    Winner bool
-    TeamId int
-}
-*/
-
-//Legal values: MID, MIDDLE, TOP, JUNGLE, BOT, BOTTOM   lane
-//Legal values: DUO, NONE, SOLO, DUO_CARRY, DUO_SUPPORT role
 func contains(arr []string, comparer string) bool {
 	for _, s := range arr {
 		if s == comparer {
@@ -241,28 +214,28 @@ func contains(arr []string, comparer string) bool {
 	return false
 }
 
-func chooseMostLikelyForLane(game *lol.Match, lane string, formattedLane string) (err error, champId string) {
+func chooseMostLikelyForLane(game *lol.Match, lane string, formattedLane string) (err error, champID string) {
 	for _, p := range game.Participants {
 		if p.Timeline.Role == lane {
-			formattedChampId := fmt.Sprintf("%d", p.ChampionId)
-			if champId == "" {
+			formattedChampID := fmt.Sprintf("%d", p.ChampionID)
+			if champID == "" {
 				// nothing found yet, set it (this supports unconventional picks)
-				champId = formattedChampId
+				champID = formattedChampID
 			} else {
 				// there are multiple in this lane... lets guess!
-				savedChampIdFits := contains(championToRoleMapping[champId], formattedLane)
-				currChampIdFits := contains(championToRoleMapping[formattedChampId], formattedLane)
-				if savedChampIdFits && currChampIdFits {
+				savedChampIDFits := contains(championToRoleMapping[champID], formattedLane)
+				currChampIDFits := contains(championToRoleMapping[formattedChampID], formattedLane)
+				if savedChampIDFits && currChampIDFits {
 					return errors.New("Multiple champs can be " + formattedLane), ""
-				} else if !currChampIdFits {
+				} else if !currChampIDFits {
 					// keep the saved champ id
 					continue
-				} else if !savedChampIdFits {
+				} else if !savedChampIDFits {
 					// make curr champ the saved champ
-					champId = formattedChampId
+					champID = formattedChampID
 				}
 			}
 		}
 	}
-	return nil, champId
+	return nil, champID
 }
