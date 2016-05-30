@@ -9,3 +9,6 @@ dev:
 matchups:
 	cd scripts/
 	go run *.go
+
+scrape:
+	go run scrape.go api.go analytics.go parsegame.go > "scrape.$(date +%Y-%m-%d_%H:%M).log" 2>&1
