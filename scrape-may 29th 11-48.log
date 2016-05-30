@@ -1,0 +1,212 @@
+2016/05/29 23:33:44 Decoded: 
+2016/05/29 23:33:44 map[ru:2006095010 euw:2006095010 na:2006095010 las:2006095010 tr:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010]
+2016/05/29 23:33:44 wait time between api calls is: 1.5s
+2016/05/29 23:33:46 MatchID: 2006095184 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095191 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095176 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095157 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095154 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095164 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095189 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095166 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095210 region: na Non 200 return code: 500
+2016/05/29 23:33:46 MatchID: 2006095139 region: na Non 200 return code: 500
+2016/05/29 23:33:49 MatchID: 2006095367 region: na Non 200 return code: 500
+2016/05/29 23:33:57 MatchID: 2006095049 region: na Get https://na.api.pvp.net/api/lol/na/v2.2/match/2006095049?api_key=0a3f3064-a507-4be3-8e71-ba7c404d057e&includeTimeline=false: net/http: TLS handshake timeout
+2016/05/29 23:34:11 MatchID: 2006096433 region: na Get https://na.api.pvp.net/api/lol/na/v2.2/match/2006096433?api_key=0a3f3064-a507-4be3-8e71-ba7c404d057e&includeTimeline=false: net/http: TLS handshake timeout
+2016/05/29 23:34:34 MatchID: 2006099463 region: na Non 200 return code: 500
+2016/05/29 23:34:44 Encoded: 
+2016/05/29 23:34:44 map[eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010 ru:2006095010 euw:2006095010 na:2006100410 las:2006095010 tr:2006095010]
+2016/05/29 23:34:44 Finished updating the match id file
+2016/05/29 23:34:47 MatchID: 2006100672 region: na Non 200 return code: 500
+2016/05/29 23:34:47 MatchID: 2006100680 region: na Non 200 return code: 500
+2016/05/29 23:34:47 MatchID: 2006100684 region: na Non 200 return code: 500
+2016/05/29 23:34:47 MatchID: 2006100685 region: na Non 200 return code: 500
+2016/05/29 23:34:51 MatchID: 2006101029 region: na Non 200 return code: 500
+2016/05/29 23:34:51 MatchID: 2006101020 region: na Non 200 return code: 500
+2016/05/29 23:34:51 MatchID: 2006101033 region: na Non 200 return code: 500
+2016/05/29 23:34:51 MatchID: 2006101035 region: na Non 200 return code: 500
+2016/05/29 23:35:36 MatchID: 2006105251 region: na Non 200 return code: 500
+2016/05/29 23:35:36 MatchID: 2006105250 region: na Non 200 return code: 500
+2016/05/29 23:35:44 Encoded: 
+2016/05/29 23:35:44 map[br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006105981 las:2006095010]
+2016/05/29 23:35:44 Finished updating the match id file
+2016/05/29 23:36:19 MatchID: 2006109158 region: na Non 200 return code: 500
+2016/05/29 23:36:21 MatchID: 2006109409 region: na Non 200 return code: 500
+2016/05/29 23:36:21 MatchID: 2006109421 region: na Non 200 return code: 500
+2016/05/29 23:36:44 Encoded: 
+2016/05/29 23:36:44 map[euw:2006095010 na:2006111550 las:2006095010 tr:2006095010 ru:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010 eune:2006095010]
+2016/05/29 23:36:44 Finished updating the match id file
+2016/05/29 23:36:55 MatchID: 2006112521 region: na Non 200 return code: 500
+2016/05/29 23:36:55 MatchID: 2006112517 region: na Non 200 return code: 500
+2016/05/29 23:36:58 MatchID: 2006112844 region: na Non 200 return code: 500
+2016/05/29 23:37:15 MatchID: 2006114360 region: na Non 200 return code: 500
+2016/05/29 23:37:17 MatchID: 2006114607 region: na Non 200 return code: 500
+2016/05/29 23:37:18 MatchID: 2006114610 region: na Non 200 return code: 500
+2016/05/29 23:37:18 MatchID: 2006114611 region: na Non 200 return code: 500
+2016/05/29 23:37:18 MatchID: 2006114618 region: na Non 200 return code: 500
+2016/05/29 23:37:21 MatchID: 2006114978 region: na Non 200 return code: 500
+2016/05/29 23:37:22 MatchID: 2006114989 region: na Non 200 return code: 500
+2016/05/29 23:37:36 MatchID: 2006116341 region: na Non 200 return code: 500
+2016/05/29 23:37:39 MatchID: 2006116650 region: na Non 200 return code: 500
+2016/05/29 23:37:39 MatchID: 2006116652 region: na Non 200 return code: 500
+2016/05/29 23:37:44 Encoded: 
+2016/05/29 23:37:44 map[las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006117112 kr:2006095010 lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010]
+2016/05/29 23:37:44 Finished updating the match id file
+2016/05/29 23:37:56 MatchID: 2006118187 region: na Non 200 return code: 500
+2016/05/29 23:37:56 MatchID: 2006118190 region: na Non 200 return code: 500
+2016/05/29 23:37:56 MatchID: 2006118193 region: na Non 200 return code: 500
+2016/05/29 23:37:56 MatchID: 2006118200 region: na Non 200 return code: 500
+2016/05/29 23:37:56 MatchID: 2006118203 region: na Non 200 return code: 500
+2016/05/29 23:38:14 MatchID: 2006119844 region: na Non 200 return code: 500
+2016/05/29 23:38:14 MatchID: 2006119840 region: na Non 200 return code: 500
+2016/05/29 23:38:17 MatchID: 2006120129 region: na Non 200 return code: 500
+2016/05/29 23:38:17 MatchID: 2006120138 region: na Non 200 return code: 500
+2016/05/29 23:38:17 MatchID: 2006120133 region: na Non 200 return code: 500
+2016/05/29 23:38:17 MatchID: 2006120140 region: na Non 200 return code: 500
+2016/05/29 23:38:23 MatchID: 2006120697 region: na Non 200 return code: 500
+2016/05/29 23:38:23 MatchID: 2006120686 region: na Non 200 return code: 500
+2016/05/29 23:38:24 MatchID: 2006120796 region: na Non 200 return code: 500
+2016/05/29 23:38:44 Encoded: 
+2016/05/29 23:38:44 map[jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010 eune:2006095010 euw:2006095010 na:2006122685 las:2006095010 tr:2006095010 ru:2006095010]
+2016/05/29 23:38:44 Finished updating the match id file
+2016/05/29 23:39:01 MatchID: 2006124232 region: na Non 200 return code: 500
+2016/05/29 23:39:23 MatchID: 2006126240 region: na Non 200 return code: 500
+2016/05/29 23:39:23 MatchID: 2006126243 region: na Non 200 return code: 500
+2016/05/29 23:39:23 MatchID: 2006126258 region: na Non 200 return code: 500
+2016/05/29 23:39:23 MatchID: 2006126263 region: na Non 200 return code: 500
+2016/05/29 23:39:28 MatchID: 2006126743 region: na Non 200 return code: 500
+2016/05/29 23:39:28 MatchID: 2006126745 region: na Non 200 return code: 500
+2016/05/29 23:39:28 MatchID: 2006126744 region: na Non 200 return code: 500
+2016/05/29 23:39:44 Encoded: 
+2016/05/29 23:39:44 map[lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006128262]
+2016/05/29 23:39:44 Finished updating the match id file
+2016/05/29 23:39:47 MatchID: 2006128541 region: na Non 200 return code: 500
+2016/05/29 23:40:11 MatchID: 2006130711 region: na Non 200 return code: 500
+2016/05/29 23:40:11 MatchID: 2006130708 region: na Non 200 return code: 500
+2016/05/29 23:40:13 MatchID: 2006130927 region: na Non 200 return code: 500
+2016/05/29 23:40:40 MatchID: 2006133397 region: na Non 200 return code: 500
+2016/05/29 23:40:44 Encoded: 
+2016/05/29 23:40:44 map[na:2006133835 las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010]
+2016/05/29 23:40:44 Finished updating the match id file
+2016/05/29 23:41:01 MatchID: 2006135373 region: na Non 200 return code: 500
+2016/05/29 23:41:01 MatchID: 2006135383 region: na Non 200 return code: 500
+2016/05/29 23:41:01 MatchID: 2006135390 region: na Non 200 return code: 500
+2016/05/29 23:41:04 MatchID: 2006135629 region: na Non 200 return code: 500
+2016/05/29 23:41:04 MatchID: 2006135628 region: na Non 200 return code: 500
+2016/05/29 23:41:04 MatchID: 2006135630 region: na Non 200 return code: 500
+2016/05/29 23:41:31 MatchID: 2006138195 region: na Non 200 return code: 500
+2016/05/29 23:41:31 MatchID: 2006138198 region: na Non 200 return code: 500
+2016/05/29 23:41:33 MatchID: 2006138302 region: na Non 200 return code: 500
+2016/05/29 23:41:34 MatchID: 2006138450 region: na Non 200 return code: 500
+2016/05/29 23:41:34 MatchID: 2006138452 region: na Non 200 return code: 500
+2016/05/29 23:41:34 MatchID: 2006138460 region: na Non 200 return code: 500
+2016/05/29 23:41:34 MatchID: 2006138465 region: na Non 200 return code: 500
+2016/05/29 23:41:34 MatchID: 2006138466 region: na Non 200 return code: 500
+2016/05/29 23:41:42 MatchID: 2006139184 region: na Non 200 return code: 500
+2016/05/29 23:41:44 Encoded: 
+2016/05/29 23:41:44 map[lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006139400]
+2016/05/29 23:41:44 Finished updating the match id file
+2016/05/29 23:42:06 MatchID: 2006141223 region: na Non 200 return code: 503
+2016/05/29 23:42:06 MatchID: 2006141239 region: na Non 200 return code: 503
+2016/05/29 23:42:06 MatchID: 2006141246 region: na Non 200 return code: 503
+2016/05/29 23:42:19 MatchID: 2006142640 region: na Non 200 return code: 500
+2016/05/29 23:42:19 MatchID: 2006142644 region: na Non 200 return code: 500
+2016/05/29 23:42:22 MatchID: 2006142865 region: na Non 200 return code: 500
+2016/05/29 23:42:22 MatchID: 2006142912 region: na Non 200 return code: 500
+2016/05/29 23:42:22 MatchID: 2006142918 region: na Non 200 return code: 500
+2016/05/29 23:42:22 MatchID: 2006142915 region: na Non 200 return code: 500
+2016/05/29 23:42:22 MatchID: 2006142885 region: na Non 200 return code: 500
+2016/05/29 23:42:25 MatchID: 2006143175 region: na Non 200 return code: 500
+2016/05/29 23:42:29 MatchID: 2006143534 region: na Non 200 return code: 500
+2016/05/29 23:42:29 MatchID: 2006143535 region: na Non 200 return code: 500
+2016/05/29 23:42:41 MatchID: 2006144663 region: na Non 200 return code: 500
+2016/05/29 23:42:41 MatchID: 2006144658 region: na Non 200 return code: 500
+2016/05/29 23:42:41 MatchID: 2006144675 region: na Non 200 return code: 500
+2016/05/29 23:42:41 MatchID: 2006144665 region: na Non 200 return code: 500
+2016/05/29 23:42:41 MatchID: 2006144683 region: na Non 200 return code: 500
+2016/05/29 23:42:44 Encoded: 
+2016/05/29 23:42:44 map[ru:2006095010 euw:2006095010 na:2006144977 las:2006095010 tr:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010]
+2016/05/29 23:42:44 Finished updating the match id file
+2016/05/29 23:42:45 MatchID: 2006145052 region: na Non 200 return code: 500
+2016/05/29 23:43:22 MatchID: 2006148509 region: na Non 200 return code: 500
+2016/05/29 23:43:23 MatchID: 2006148548 region: na Non 200 return code: 500
+2016/05/29 23:43:27 MatchID: 2006148933 region: na Non 200 return code: 500
+2016/05/29 23:43:27 MatchID: 2006148940 region: na Non 200 return code: 500
+2016/05/29 23:43:27 MatchID: 2006148937 region: na Non 200 return code: 500
+2016/05/29 23:43:31 MatchID: 2006149283 region: na Non 200 return code: 500
+2016/05/29 23:43:31 MatchID: 2006149285 region: na Non 200 return code: 500
+2016/05/29 23:43:31 MatchID: 2006149298 region: na Non 200 return code: 500
+2016/05/29 23:43:31 MatchID: 2006149299 region: na Non 200 return code: 500
+2016/05/29 23:43:32 MatchID: 2006149426 region: na Non 200 return code: 500
+2016/05/29 23:43:32 MatchID: 2006149436 region: na Non 200 return code: 500
+2016/05/29 23:43:40 MatchID: 2006150174 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150351 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150352 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150354 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150355 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150357 region: na Non 200 return code: 500
+2016/05/29 23:43:42 MatchID: 2006150359 region: na Non 200 return code: 500
+2016/05/29 23:43:43 MatchID: 2006150444 region: na Non 200 return code: 500
+2016/05/29 23:43:44 Encoded: 
+2016/05/29 23:43:44 map[ru:2006095010 euw:2006095010 na:2006150545 las:2006095010 tr:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 br:2006095010]
+2016/05/29 23:43:44 Finished updating the match id file
+2016/05/29 23:44:15 MatchID: 2006153399 region: na Non 200 return code: 500
+2016/05/29 23:44:15 MatchID: 2006153402 region: na Non 200 return code: 500
+2016/05/29 23:44:15 MatchID: 2006153412 region: na Non 200 return code: 500
+2016/05/29 23:44:15 MatchID: 2006153413 region: na Non 200 return code: 500
+2016/05/29 23:44:16 MatchID: 2006153425 region: na Non 200 return code: 500
+2016/05/29 23:44:24 MatchID: 2006154178 region: na Non 200 return code: 500
+2016/05/29 23:44:27 MatchID: 2006154454 region: na Non 200 return code: 500
+2016/05/29 23:44:36 MatchID: 2006155289 region: na Non 200 return code: 500
+2016/05/29 23:44:40 MatchID: 2006155733 region: na Non 200 return code: 500
+2016/05/29 23:44:40 MatchID: 2006155734 region: na Non 200 return code: 500
+2016/05/29 23:44:40 MatchID: 2006155735 region: na Non 200 return code: 500
+2016/05/29 23:44:44 Encoded: 
+2016/05/29 23:44:44 map[las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006156097 kr:2006095010 lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010]
+2016/05/29 23:44:44 Finished updating the match id file
+2016/05/29 23:45:39 MatchID: 2006161199 region: na Non 200 return code: 500
+2016/05/29 23:45:44 Encoded: 
+2016/05/29 23:45:44 map[br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 lan:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006161674 las:2006095010]
+2016/05/29 23:45:44 Finished updating the match id file
+2016/05/29 23:46:06 MatchID: 2006163642 region: na Non 200 return code: 500
+2016/05/29 23:46:06 MatchID: 2006163649 region: na Non 200 return code: 500
+2016/05/29 23:46:08 MatchID: 2006163849 region: na Non 200 return code: 500
+2016/05/29 23:46:17 MatchID: 2006164691 region: na Non 200 return code: 500
+2016/05/29 23:46:17 MatchID: 2006164693 region: na Non 200 return code: 500
+2016/05/29 23:46:17 MatchID: 2006164701 region: na Non 200 return code: 500
+2016/05/29 23:46:17 MatchID: 2006164669 region: na Non 200 return code: 500
+2016/05/29 23:46:28 MatchID: 2006165716 region: na Non 200 return code: 500
+2016/05/29 23:46:28 MatchID: 2006165719 region: na Non 200 return code: 500
+2016/05/29 23:46:30 MatchID: 2006165950 region: na Non 200 return code: 500
+2016/05/29 23:46:30 MatchID: 2006165951 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006165961 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006165959 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006166025 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006166027 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006166029 region: na Non 200 return code: 500
+2016/05/29 23:46:31 MatchID: 2006166036 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166240 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166273 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166280 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166258 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166290 region: na Non 200 return code: 500
+2016/05/29 23:46:34 MatchID: 2006166282 region: na Non 200 return code: 500
+2016/05/29 23:46:44 Encoded: 
+2016/05/29 23:46:44 map[las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006167251 lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010]
+2016/05/29 23:46:44 Finished updating the match id file
+2016/05/29 23:46:51 MatchID: 2006167874 region: na Non 200 return code: 500
+2016/05/29 23:47:05 MatchID: 2006169200 region: na Non 200 return code: 500
+2016/05/29 23:47:05 MatchID: 2006169201 region: na Non 200 return code: 500
+2016/05/29 23:47:05 MatchID: 2006169203 region: na Non 200 return code: 500
+2016/05/29 23:47:11 MatchID: 2006169687 region: na Non 200 return code: 500
+2016/05/29 23:47:27 MatchID: 2006171216 region: na Non 200 return code: 500
+2016/05/29 23:47:27 MatchID: 2006171223 region: na Non 200 return code: 500
+2016/05/29 23:47:39 MatchID: 2006172316 region: na Non 200 return code: 500
+2016/05/29 23:47:39 MatchID: 2006172336 region: na Non 200 return code: 500
+2016/05/29 23:47:39 MatchID: 2006172339 region: na Non 200 return code: 500
+2016/05/29 23:47:44 Encoded: 
+2016/05/29 23:47:44 map[lan:2006095010 br:2006095010 eune:2006095010 jp:2006095010 oce:2006095010 kr:2006095010 las:2006095010 tr:2006095010 ru:2006095010 euw:2006095010 na:2006172813]
+2016/05/29 23:47:44 Finished updating the match id file
+2016/05/29 23:47:46 MatchID: 2006172984 region: na Non 200 return code: 500
+exit status 2

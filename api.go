@@ -568,8 +568,8 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 	team2Strings := []string{}
 	for _, p := range game.Participants {
 		t := fmt.Sprintf("%s:%s:%d",
-			p.Timeline.Role,
-			p.Timeline.Lane,
+			p.ParticipantTimeline.Role,
+			p.ParticipantTimeline.Lane,
 			p.ChampionID)
 		if p.TeamID == 100 {
 			team1Strings = append(team1Strings, t)
@@ -595,7 +595,7 @@ func generateMatchups(game *lol.Match) (winnerLosers []WinnerLoser) {
 					if pl.ParticipantID == p.ParticipantID {
 						i = int(math.Mod(float64(i), 5))
 						winnerLosers[i].Lane = l[:colonIndex]
-						if p.Stat.Winner {
+						if p.ParticipantStats.Winner {
 							winnerLosers[i].WinnerSummonerID = pl.Player.SummonerID
 							winnerLosers[i].WinnerChampionID = l[colonIndex+1:]
 						} else {

@@ -60,3 +60,8 @@ You may need to manually `go get` these to make the app work, please run `go get
 
 ### access postgres on ubuntu
 `sudo -i -u postgres`
+
+### output stderr and stdout into log file
+`command > log.txt 2>&1`
+eg.
+go run scrape.go api.go analytics.go parsegame.go > scrape.log 2>&1

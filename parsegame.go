@@ -216,7 +216,7 @@ func contains(arr []string, comparer string) bool {
 
 func chooseMostLikelyForLane(game *lol.Match, lane string, formattedLane string) (err error, champID string) {
 	for _, p := range game.Participants {
-		if p.Timeline.Role == lane {
+		if p.ParticipantTimeline.Role == lane {
 			formattedChampID := fmt.Sprintf("%d", p.ChampionID)
 			if champID == "" {
 				// nothing found yet, set it (this supports unconventional picks)
