@@ -65,3 +65,6 @@ You may need to manually `go get` these to make the app work, please run `go get
 `command > log.txt 2>&1`
 eg.
 go run scrape.go api.go analytics.go parsegame.go > scrape.log 2>&1
+
+### how to use screens
+https://www.vultr.com/docs/using-screen-on-ubuntu-14-04
