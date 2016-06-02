@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	// "runtime"
 	"strings"
 	"sync"
@@ -126,9 +126,15 @@ func main() {
 	var failedAPICalls = make([]uint64, 0)
 	for {
 		if counter == 60*5 {
-			saveMatchID(naMatchID, "na")
+			naLock.Lock()
+			matchIDToSave := findMin(failedAPICalls)
+			if matchIDToSave > naMatchID {
+				matchIDToSave = naMatchID
+			}
+			naLock.Unlock()
+			saveMatchID(matchIDToSave, "na")
 			counter = 0
-			panic(errors.New("WTF"))
+			// panic(errors.New("WTF"))
 		}
 		now := time.Now()
 		naLock.Lock()
@@ -230,4 +236,14 @@ func readMatchID(region string) (ID uint64) {
 	}
 	log.Println("ID read for region:", region, "is 0.... we are starting from scratch")
 	return 2006095010
+}
+
+func findMin(arr []uint64) uint64 {
+	var min uint64 = math.MaxUint64
+	for _, id := range arr {
+		if id < min {
+			min = id
+		}
+	}
+	return min
 }
