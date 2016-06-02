@@ -11,4 +11,7 @@ matchups:
 	go run *.go
 
 scrape:
-	go run scrape.go api.go analytics.go parsegame.go > "scrape.$(date +%Y-%m-%d_%H:%M).log" 2>&1
+	go run scrape.go api.go analytics.go parsegame.go
+
+scrapewithlog:
+	go run scrape.go api.go analytics.go parsegame.go > "scrape.$(date +%Y-%m-%d_%H:%M:%S).log" 2>&1
