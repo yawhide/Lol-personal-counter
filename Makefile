@@ -2,6 +2,9 @@ all:
 	gulp css scripts concat-css
 	go run main.go api.go analytics.go parsegame.go
 
+startPm2:
+	sudo pm2 start -x ./lol-counter -n "go"
+
 dev:
 	gulp css scripts concat-css
 	gin -a 8080 run
