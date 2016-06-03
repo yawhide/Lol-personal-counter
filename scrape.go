@@ -123,16 +123,15 @@ func main() {
 	regionAPIScraper(brLock, "br", brMatchID, 140)
 	regionAPIScraper(euneLock, "eune", euneMatchID, 140)
 	regionAPIScraper(euwLock, "euw", euwMatchID, 140)
-	regionAPIScraper(jpLock, "jp", jpMatchID, 140)
+	// regionAPIScraper(jpLock, "jp", jpMatchID, 140)
 	regionAPIScraper(krLock, "kr", krMatchID, 140)
-	regionAPIScraper(lanLock, "lan", lanMatchID, 140)
-	regionAPIScraper(lasLock, "las", lasMatchID, 140)
-	// regionAPIScraper(naLock, "na", naMatchID, 140)
-	regionAPIScraper(oceLock, "oce", oceMatchID, 140)
-	regionAPIScraper(trLock, "tr", trMatchID, 140)
-	regionAPIScraper(ruLock, "ru", ruMatchID, 140)
+	// regionAPIScraper(lanLock, "lan", lanMatchID, 140)
+	// regionAPIScraper(lasLock, "las", lasMatchID, 140)
+	regionAPIScraper(naLock, "na", naMatchID, 140)
+	// regionAPIScraper(oceLock, "oce", oceMatchID, 140)
+	// regionAPIScraper(trLock, "tr", trMatchID, 140)
+	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
 
-	// regionAPIScraper(naLock, "na")
 	select {}
 }
 
@@ -204,7 +203,7 @@ func scrape(region string, matchID uint64) error {
 		if strings.HasSuffix(errStr, "404") {
 			// game doesnt exist
 		} else {
-			//log.Println("MatchID:", matchID, "region:", region, errStr)
+			// log.Println("MatchID:", matchID, "region:", region, errStr)
 		}
 		return err
 	}
