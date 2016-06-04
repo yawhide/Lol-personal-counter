@@ -134,11 +134,11 @@ func main() {
 	// regionAPIScraper(trLock, "tr", trMatchID, 140)
 	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
 
-	getAllSummonerNames("br", 140)
-	getAllSummonerNames("eune", 140)
-	// getAllSummonerNames("euw", 140)
-	// getAllSummonerNames("jp", 140)
-	// getAllSummonerNames("kr", 140)
+	getAllSummonerNames("br", 50)
+	getAllSummonerNames("eune", 50)
+	getAllSummonerNames("euw", 50)
+	getAllSummonerNames("jp", 50)
+	getAllSummonerNames("kr", 50)
 
 	// getAllSummonerNames("lan", 140)
 	// getAllSummonerNames("las", 140)
