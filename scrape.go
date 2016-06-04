@@ -234,7 +234,7 @@ func getAllSummonerNames(region string, concurrency int) {
 						panic(err)
 					}
 					if !strings.HasSuffix(errStr, "404") {
-						log.Println("Failed an api request.", errStr[len(errStr)-3:])
+						log.Println("Failed an api request starting with summoner id:", arrIDs[0], "region:", region, "status code:", errStr[len(errStr)-3:])
 						lock.Lock()
 						failedAPICalls = append(failedAPICalls, sID)
 						lock.Unlock()
