@@ -227,7 +227,7 @@ func getAllSummonerNames(region string, concurrency int) {
 				if len(failedAPICalls) > 0 {
 					sID = failedAPICalls[0]
 					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
-					// log.Println("Using a failed api call ID:", sID)
+					log.Println("Using a failed api call ID:", sID, "region:", region)
 				} else {
 					summonerID += 40
 				}
