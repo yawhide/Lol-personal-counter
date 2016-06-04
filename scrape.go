@@ -134,17 +134,17 @@ func main() {
 	// regionAPIScraper(trLock, "tr", trMatchID, 140)
 	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
 
-	getAllSummonerNames("br", 50)
-	getAllSummonerNames("eune", 50)
-	getAllSummonerNames("euw", 50)
-	getAllSummonerNames("jp", 50)
-	getAllSummonerNames("kr", 50)
+	getAllSummonerNames("br", 25)
+	getAllSummonerNames("eune", 25)
+	getAllSummonerNames("euw", 25)
+	getAllSummonerNames("jp", 25)
+	getAllSummonerNames("kr", 25)
 
-	// getAllSummonerNames("lan", 140)
-	// getAllSummonerNames("las", 140)
-	// getAllSummonerNames("ru", 140)
-	// getAllSummonerNames("oce", 140)
-	// getAllSummonerNames("tr", 140)
+	getAllSummonerNames("lan", 25)
+	getAllSummonerNames("las", 25)
+	getAllSummonerNames("ru", 25)
+	getAllSummonerNames("oce", 25)
+	getAllSummonerNames("tr", 25)
 
 	select {}
 }
@@ -220,6 +220,9 @@ func getAllSummonerNames(region string, concurrency int) {
 			for {
 				bucket.Wait(1)
 				lock.Lock()
+				if summonerID > 85000000 {
+					break
+				}
 				sID := summonerID
 				if len(failedAPICalls) > 0 {
 					sID = failedAPICalls[0]
