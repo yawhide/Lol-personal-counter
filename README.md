@@ -53,6 +53,7 @@ You may need to manually `go get` these to make the app work, please run `go get
 - gopkg.in/pg.v4
 - github.com/yawhide/go-lol
 - github.com/cznic/sortutil
+- github.com/juju/ratelimit
 
 
 ### start postgres on windows
