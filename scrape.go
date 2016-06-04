@@ -13,7 +13,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/juju/ratelimit"
 	"github.com/spf13/viper"
+	"github.com/yawhide/go-lol"
 	"gopkg.in/pg.v4"
 )
 
@@ -127,10 +129,12 @@ func main() {
 	// regionAPIScraper(krLock, "kr", krMatchID, 140)
 	// regionAPIScraper(lanLock, "lan", lanMatchID, 140)
 	// regionAPIScraper(lasLock, "las", lasMatchID, 140)
-	regionAPIScraper(naLock, "na", naMatchID, 140)
+	// regionAPIScraper(naLock, "na", naMatchID, 140)
 	// regionAPIScraper(oceLock, "oce", oceMatchID, 140)
 	// regionAPIScraper(trLock, "tr", trMatchID, 140)
 	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
+
+	getAllSummonerNames("na", 200)
 
 	select {}
 }
@@ -196,6 +200,51 @@ func regionAPIScraper(lock *sync.Mutex, region string, savedID uint64, concurren
 	}()
 }
 
+func getAllSummonerNames(region string, concurrency int) {
+	var failedAPICalls = make([]lol.SummonerID, 0)
+	lock := &sync.Mutex{}
+	var summonerID lol.SummonerID = 1
+	bucket := ratelimit.NewBucketWithRate(140, 140)
+	for i := 0; i < concurrency; i++ {
+		go func(i int) {
+			for {
+				bucket.Wait(1)
+				lock.Lock()
+				sID := summonerID
+				if len(failedAPICalls) > 0 {
+					sID = failedAPICalls[0]
+					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
+					// log.Println("Using a failed api call ID:", sID)
+				} else {
+					summonerID += 40
+				}
+				lock.Unlock()
+
+				var arrIDs = make([]lol.SummonerID, 0)
+				var j lol.SummonerID
+				for ; j < 40; j++ {
+					arrIDs = append(arrIDs, sID+j)
+				}
+				// log.Printf("summonerIDs lookup: %v...", arrIDs[0])
+				err := handleGetSummonerByID(arrIDs, region)
+				if err != nil {
+					errStr := strings.TrimSpace(err.Error())
+					if strings.HasSuffix(errStr, "Too Many request to server") {
+						log.Println("hit a real 429")
+						panic(err)
+					}
+					if !strings.HasSuffix(errStr, "404") {
+						log.Println("Failed an api request.", errStr[len(errStr)-3:])
+						lock.Lock()
+						failedAPICalls = append(failedAPICalls, sID)
+						lock.Unlock()
+					}
+				}
+			}
+		}(i)
+	}
+}
+
 func scrape(region string, matchID uint64) error {
 	game, err := apiEndpointMap[region].GetMatch(matchID, false)
 	if err != nil {
@@ -219,6 +268,41 @@ func scrape(region string, matchID uint64) error {
 
 	if err != nil {
 		log.Println("Failed to insert the game... MatchID:", game.MatchID, "region:", region, err)
+		return err
+	}
+	return nil
+}
+
+func handleGetSummonerByID(ids []lol.SummonerID, region string) error {
+	summonerMap, err := apiEndpointMap[region].GetSummonerByID(ids)
+	if err != nil {
+		return err
+	}
+	var sArr []MySummoner
+	for _, summoner := range summonerMap {
+		if summoner.ID == 0 {
+			continue
+		} else if summoner.Level < 30 {
+			continue
+		}
+		s := MySummoner{
+			NormalizeSummonerName(summoner.Name)[0],
+			summoner.ProfileIconID,
+			time.Date(2001, 0, 0, 0, 0, 0, 0, time.UTC),
+			0,
+			time.Date(2001, 0, 0, 0, 0, 0, 0, time.UTC),
+			region,
+			uint64(summoner.RevisionDate),
+			uint64(summoner.ID),
+			summoner.Level}
+		sArr = append(sArr, s)
+	}
+	if len(sArr) == 0 {
+		return nil
+	}
+	_, err = db.Model(&sArr).OnConflict("DO NOTHING").Create()
+	if err != nil {
+		fmt.Println("Failed to save summoners starting with summoner id:", ids[0], "region:", region, "in db.", err)
 		return err
 	}
 	return nil
