@@ -137,14 +137,14 @@ func main() {
 	getAllSummonerNames("br", 140)
 	getAllSummonerNames("eune", 140)
 	getAllSummonerNames("euw", 140)
-	getAllSummonerNames("jp", 140)
-	getAllSummonerNames("kr", 140)
+	// getAllSummonerNames("jp", 140)
+	// getAllSummonerNames("kr", 140)
 
-	getAllSummonerNames("lan", 140)
-	getAllSummonerNames("las", 140)
-	getAllSummonerNames("ru", 140)
-	getAllSummonerNames("oce", 140)
-	getAllSummonerNames("tr", 140)
+	// getAllSummonerNames("lan", 140)
+	// getAllSummonerNames("las", 140)
+	// getAllSummonerNames("ru", 140)
+	// getAllSummonerNames("oce", 140)
+	// getAllSummonerNames("tr", 140)
 
 	select {}
 }
@@ -240,7 +240,7 @@ func getAllSummonerNames(region string, concurrency int) {
 				if err != nil {
 					errStr := strings.TrimSpace(err.Error())
 					if strings.HasSuffix(errStr, "Too Many request to server") {
-						log.Println("hit a real 429")
+						log.Println("hit a real 429, region:", region)
 						panic(err)
 					}
 					if !strings.HasSuffix(errStr, "404") {
