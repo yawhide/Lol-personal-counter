@@ -129,12 +129,12 @@ func main() {
 	// regionAPIScraper(krLock, "kr", krMatchID, 140)
 	// regionAPIScraper(lanLock, "lan", lanMatchID, 140)
 	// regionAPIScraper(lasLock, "las", lasMatchID, 140)
-	// regionAPIScraper(naLock, "na", naMatchID, 140)
+	regionAPIScraper(naLock, "na", naMatchID, 140)
 	// regionAPIScraper(oceLock, "oce", oceMatchID, 140)
 	// regionAPIScraper(trLock, "tr", trMatchID, 140)
 	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
 
-	getAllSummonerNames("na", 200)
+	// getAllSummonerNames("na", 200)
 
 	select {}
 }
