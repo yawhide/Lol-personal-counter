@@ -136,7 +136,7 @@ func main() {
 
 	getAllSummonerNames("br", 140)
 	getAllSummonerNames("eune", 140)
-	getAllSummonerNames("euw", 140)
+	// getAllSummonerNames("euw", 140)
 	// getAllSummonerNames("jp", 140)
 	// getAllSummonerNames("kr", 140)
 
