@@ -56,9 +56,10 @@ type ChampionRoleMapping struct {
 }
 
 type MatchStore struct {
-	MatchID uint64
-	Region  string
-	Game    string
+	MatchID   uint64
+	Region    string
+	QueueType string
+	Game      string
 }
 
 func main() {
@@ -96,6 +97,7 @@ func main() {
     CREATE TABLE IF NOT EXISTS match_stores (
     match_id BIGINT,
     region TEXT,
+		queue_type TEXT,
     game JSON,
     PRIMARY KEY (match_id, region))`)
 
@@ -277,7 +279,7 @@ func scrape(region string, matchID uint64) error {
 		log.Println("Failed to marshal the game... MatchID:", game.MatchID, "region:", region, err)
 		return err
 	}
-	_, err = db.Model(&MatchStore{game.MatchID, game.Region, string(w)}).OnConflict("DO NOTHING").Create()
+	_, err = db.Model(&MatchStore{game.MatchID, game.Region, game.QueueType, string(w)}).OnConflict("DO NOTHING").Create()
 
 	if err != nil {
 		log.Println("Failed to insert the game... MatchID:", game.MatchID, "region:", region, err)
