@@ -148,9 +148,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 15)
-	getMatchlist("kr", 15)
-	getMatchlist("euw", 15)
+	getMatchlist("na", 25)
+	getMatchlist("kr", 25)
+	getMatchlist("euw", 25)
+	getMatchlist("eune", 25)
 
 	select {}
 }
@@ -270,35 +271,43 @@ func getMatchlist(region string, concurrency int) {
 	offset := 0
 	var summoners []MySummoner
 	var currentSummonerIndex int = 0
-	err := db.Model(&summoners).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+	err := db.Model(&summoners).Where("region = ?", region).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
 	if err != nil {
 		panic(err)
 	}
-	offset += 10000
+	offset += len(summoners)
+
+	bucket := ratelimit.NewBucketWithRate(140, 140)
 
 	for i := 0; i < concurrency; i++ {
 		go func() {
 			for {
+				bucket.Wait(1)
 				lock.Lock()
+				if len(summoners) == 0 {
+					log.Println("Got 0 summoners back from db, we must be done? region:", region)
+					return
+				}
 				if currentSummonerIndex >= len(summoners) {
 					lastSummonerID := summoners[len(summoners)-1].SummonerID
-					err := db.Model(&summoners).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+					err := db.Model(&summoners).Where("region = ?", region).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
 					if err != nil {
-						log.Panicln("last summoner id:", lastSummonerID, "region:", region)
+						log.Println("last summoner id:", lastSummonerID, "region:", region)
 						panic(err)
 					}
-					offset += 10000
 					if len(summoners) == 0 {
 						log.Println("Got 0 summoners back from db, we must be done? region:", region)
 						return
 					}
+					offset += len(summoners)
 					currentSummonerIndex = 0
 				}
 				summoner := summoners[currentSummonerIndex]
+				// log.Println(summoner.SummonerID, failedAPICalls, currentSummonerIndex)
 				if len(failedAPICalls) > 0 {
 					summoner = failedAPICalls[0]
 					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
-					log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
+					// log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
 				} else {
 					currentSummonerIndex++
 				}
@@ -317,8 +326,10 @@ func getMatchlist(region string, concurrency int) {
 						log.Println("Failed an api request starting with summoner id:", summoner.SummonerID, "region:", region, errStr)
 						failedAPICalls = append(failedAPICalls, summoner)
 						lock.Unlock()
+						continue
 					}
 				}
+				// log.Println("SUCCESSFULLY COMPLETED summoner id:", summoner.SummonerID, "region:", region)
 			}
 		}()
 	}
@@ -405,7 +416,7 @@ func handleGetMatchlist(summoner MySummoner, region string) error {
 			m.Queue,
 			"{}"})
 	}
-	// log.Println("About to insert", len(ms), "into db with summoner id:", summoner.SummonerID)
+	// log.Println("About to insert summoner id:", summoner.SummonerID, len(ms), "records")
 	// now := time.Now()
 	_, err = db.Model(&ms).OnConflict("DO NOTHING").Create()
 	if err != nil {
