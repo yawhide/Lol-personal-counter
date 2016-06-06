@@ -74,8 +74,10 @@ func main() {
 	password := viper.GetString("postgres.password")
 
 	db = pg.Connect(&pg.Options{
-		User:     username,
-		Password: password,
+		User:        username,
+		Password:    password,
+		PoolSize:    20,
+		PoolTimeout: time.Second * 30,
 	})
 
 	championToRoleMapping = make(map[string][]string)
@@ -148,10 +150,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 5, 494202)
-	getMatchlist("kr", 5, 1182731)
-	getMatchlist("euw", 5, 180217)
-	getMatchlist("eune", 5, 19342676)
+	getMatchlist("na", 5, 109468)
+	getMatchlist("kr", 5, 1198183)
+	getMatchlist("euw", 5, 108105)
+	getMatchlist("eune", 5, 19066067)
 
 	select {}
 }
@@ -268,14 +270,12 @@ func getAllSummonerNames(region string, concurrency int) {
 func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 	var failedAPICalls = make([]MySummoner, 0)
 	lock := &sync.Mutex{}
-	offset := 0
 	var summoners []MySummoner
 	var currentSummonerIndex int = 0
-	err := db.Model(&summoners).Where("region = ? and summoner_id > ?", region, startSummonerID).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+	err := db.Model(&summoners).Where("region = ? and summoner_id >= ?", region, startSummonerID).Order("summoner_id ASC").Limit(10000).Select()
 	if err != nil {
 		panic(err)
 	}
-	offset += len(summoners)
 
 	bucket := ratelimit.NewBucketWithRate(140, 140)
 
@@ -290,7 +290,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				}
 				if currentSummonerIndex >= len(summoners) {
 					lastSummonerID := summoners[len(summoners)-1].SummonerID
-					err := db.Model(&summoners).Where("region = ?", region).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+					err := db.Model(&summoners).Where("region = ? and summoner_id >= ?", region, lastSummonerID).Order("summoner_id ASC").Limit(10000).Select()
 					if err != nil {
 						log.Println("last summoner id:", lastSummonerID, "region:", region)
 						panic(err)
