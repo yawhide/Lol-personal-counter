@@ -136,17 +136,19 @@ func main() {
 	// regionAPIScraper(trLock, "tr", trMatchID, 140)
 	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
 
-	getAllSummonerNames("br", 25)
-	getAllSummonerNames("eune", 25)
-	getAllSummonerNames("euw", 25)
-	getAllSummonerNames("jp", 25)
-	getAllSummonerNames("kr", 25)
+	// getAllSummonerNames("br", 25)
+	// getAllSummonerNames("eune", 25)
+	// getAllSummonerNames("euw", 25)
+	// getAllSummonerNames("jp", 25)
+	// getAllSummonerNames("kr", 25)
+	//
+	// getAllSummonerNames("lan", 25)
+	// getAllSummonerNames("las", 25)
+	// getAllSummonerNames("ru", 25)
+	// getAllSummonerNames("oce", 25)
+	// getAllSummonerNames("tr", 25)
 
-	getAllSummonerNames("lan", 25)
-	getAllSummonerNames("las", 25)
-	getAllSummonerNames("ru", 25)
-	getAllSummonerNames("oce", 25)
-	getAllSummonerNames("tr", 25)
+	getMatchlist("na", 25)
 
 	select {}
 }
@@ -260,6 +262,66 @@ func getAllSummonerNames(region string, concurrency int) {
 	}
 }
 
+func getMatchlist(region string, concurrency int) {
+	var failedAPICalls = make([]MySummoner, 0)
+	lock := &sync.Mutex{}
+	offset := 0
+	var summoners []MySummoner
+	var currentSummonerIndex int = 0
+	err := db.Model(&summoners).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+	if err != nil {
+		panic(err)
+	}
+	offset += 10000
+
+	for i := 0; i < concurrency; i++ {
+		go func() {
+			for {
+				lock.Lock()
+				if currentSummonerIndex >= len(summoners) {
+					lastSummonerID := summoners[len(summoners)-1].SummonerID
+					err := db.Model(&summoners).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+					if err != nil {
+						log.Panicln("last summoner id:", lastSummonerID, "region:", region)
+						panic(err)
+					}
+					offset += 10000
+					if len(summoners) == 0 {
+						log.Println("Got 0 summoners back from db, we must be done? region:", region)
+						return
+					}
+					currentSummonerIndex = 0
+				}
+				summoner := summoners[currentSummonerIndex]
+				if len(failedAPICalls) > 0 {
+					summoner = failedAPICalls[0]
+					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
+					log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
+				} else {
+					currentSummonerIndex++
+				}
+
+				lock.Unlock()
+				// log.Println("summoner id:", summoner.SummonerID)
+				err = handleGetMatchlist(summoner, region)
+				if err != nil {
+					errStr := strings.TrimSpace(err.Error())
+					if strings.HasSuffix(errStr, "Too Many request to server") {
+						log.Println("hit a real 429, region:", region)
+						panic(err)
+					}
+					if !strings.HasSuffix(errStr, "404") {
+						lock.Lock()
+						log.Println("Failed an api request starting with summoner id:", summoner.SummonerID, "region:", region, errStr)
+						failedAPICalls = append(failedAPICalls, summoner)
+						lock.Unlock()
+					}
+				}
+			}
+		}()
+	}
+}
+
 func scrape(region string, matchID uint64) error {
 	game, err := apiEndpointMap[region].GetMatch(matchID, false)
 	if err != nil {
@@ -320,6 +382,35 @@ func handleGetSummonerByID(ids []lol.SummonerID, region string) error {
 		fmt.Println("Failed to save summoners starting with summoner id:", ids[0], "region:", region, "in db.", err)
 		return err
 	}
+	return nil
+}
+
+func handleGetMatchlist(summoner MySummoner, region string) error {
+	matchList, err := apiEndpointMap[region].GetMatchlist(summoner.SummonerID, 1370475437)
+	if err != nil {
+		return err
+	}
+
+	if len(matchList.Matches) == 0 {
+		return nil
+	}
+
+	var ms []MatchStore
+	for _, m := range matchList.Matches {
+		ms = append(ms, MatchStore{
+			m.MatchID,
+			region,
+			m.Queue,
+			"{}"})
+	}
+	// log.Println("About to insert", len(ms), "into db with summoner id:", summoner.SummonerID)
+	// now := time.Now()
+	_, err = db.Model(&ms).OnConflict("DO NOTHING").Create()
+	if err != nil {
+		fmt.Println("Failed to save matchlist with summoner id:", summoner.SummonerID, "region:", region, "in db.", err)
+		return err
+	}
+	// log.Println("Took", time.Now().Sub(now), "ms to insert", len(ms))
 	return nil
 }
 
