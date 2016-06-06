@@ -326,6 +326,9 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 						log.Println("Failed an api request starting with summoner id:", summoner.SummonerID, "region:", region, errStr)
 						failedAPICalls = append(failedAPICalls, summoner)
 						lock.Unlock()
+						if strings.HasSuffix(errStr, "439") {
+							time.Sleep(time.Second)
+						}
 						continue
 					}
 				}
