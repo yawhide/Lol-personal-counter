@@ -299,7 +299,6 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 						log.Println("Got 0 summoners back from db, we must be done? region:", region)
 						return
 					}
-					offset += len(summoners)
 					currentSummonerIndex = 0
 				}
 				summoner := summoners[currentSummonerIndex]
