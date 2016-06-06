@@ -149,6 +149,8 @@ func main() {
 	// getAllSummonerNames("tr", 25)
 
 	getMatchlist("na", 25)
+	getMatchlist("kr", 25)
+	getMatchlist("euw", 25)
 
 	select {}
 }
