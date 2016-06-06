@@ -148,10 +148,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 15, 128141)
-	getMatchlist("kr", 15, 1106756)
-	getMatchlist("euw", 15, 78217)
-	getMatchlist("eune", 15, 304362)
+	getMatchlist("na", 10, 128141)
+	getMatchlist("kr", 10, 1106756)
+	getMatchlist("euw", 10, 78217)
+	getMatchlist("eune", 10, 304362)
 
 	select {}
 }
