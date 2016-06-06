@@ -148,10 +148,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 25)
-	getMatchlist("kr", 25)
-	getMatchlist("euw", 25)
-	getMatchlist("eune", 25)
+	getMatchlist("na", 20, 128141)
+	getMatchlist("kr", 20, 1106756)
+	getMatchlist("euw", 20, 78217)
+	getMatchlist("eune", 20, 304362)
 
 	select {}
 }
@@ -265,13 +265,13 @@ func getAllSummonerNames(region string, concurrency int) {
 	}
 }
 
-func getMatchlist(region string, concurrency int) {
+func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 	var failedAPICalls = make([]MySummoner, 0)
 	lock := &sync.Mutex{}
 	offset := 0
 	var summoners []MySummoner
 	var currentSummonerIndex int = 0
-	err := db.Model(&summoners).Where("region = ?", region).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
+	err := db.Model(&summoners).Where("region = ? and summoner_id > ?", region, startSummonerID).Order("summoner_id ASC").Limit(10000).Offset(offset).Select()
 	if err != nil {
 		panic(err)
 	}
