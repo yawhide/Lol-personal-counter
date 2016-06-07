@@ -76,7 +76,7 @@ func main() {
 	db = pg.Connect(&pg.Options{
 		User:        username,
 		Password:    password,
-		PoolSize:    20,
+		PoolSize:    40,
 		PoolTimeout: time.Second * 30,
 	})
 
@@ -150,10 +150,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 5, 399527)
-	getMatchlist("kr", 5, 1241525)
-	getMatchlist("euw", 5, 287931)
-	getMatchlist("eune", 5, 19507841)
+	getMatchlist("na", 10, 399527)
+	getMatchlist("kr", 10, 1241525)
+	getMatchlist("euw", 10, 287931)
+	getMatchlist("eune", 10, 19507841)
 
 	select {}
 }
