@@ -307,7 +307,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				if len(failedAPICalls) > 0 {
 					summoner = failedAPICalls[0]
 					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
-					log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
+					// log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
 				} else {
 					currentSummonerIndex++
 				}
