@@ -150,10 +150,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 5, 109468)
-	getMatchlist("kr", 5, 1198183)
-	getMatchlist("euw", 5, 108105)
-	getMatchlist("eune", 5, 19066067)
+	getMatchlist("na", 10, 109468)
+	getMatchlist("kr", 10, 1198183)
+	getMatchlist("euw", 10, 108105)
+	getMatchlist("eune", 10, 19066067)
 
 	select {}
 }
@@ -277,12 +277,13 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 		panic(err)
 	}
 
-	bucket := ratelimit.NewBucketWithRate(140, 140)
+	// bucket := ratelimit.NewBucketWithRate(140, 140)
 
 	for i := 0; i < concurrency; i++ {
 		go func() {
 			for {
-				bucket.Wait(1)
+				// bucket.Wait(1)
+				// log.Println("Starting iteration")
 				lock.Lock()
 				if len(summoners) == 0 {
 					log.Println("Got 0 summoners back from db, we must be done? region:", region)
@@ -302,17 +303,17 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 					currentSummonerIndex = 0
 				}
 				summoner := summoners[currentSummonerIndex]
-				// log.Println(summoner.SummonerID, failedAPICalls, currentSummonerIndex)
+				// log.Println(summoner.SummonerID, failedAPICalls, currentSummonerIndex, region)
 				if len(failedAPICalls) > 0 {
 					summoner = failedAPICalls[0]
 					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
-					// log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
+					log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
 				} else {
 					currentSummonerIndex++
 				}
 
 				lock.Unlock()
-				// log.Println("summoner id:", summoner.SummonerID)
+				// log.Println("Done using lock to figure out the summoner id to use", summoner.SummonerID, region)
 				err = handleGetMatchlist(summoner, region)
 				if err != nil {
 					errStr := strings.TrimSpace(err.Error())
@@ -325,13 +326,16 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 						log.Println("Failed an api request starting with summoner id:", summoner.SummonerID, "region:", region, errStr)
 						failedAPICalls = append(failedAPICalls, summoner)
 						lock.Unlock()
-						if strings.HasSuffix(errStr, "439") {
-							time.Sleep(time.Second)
-						}
+						time.Sleep(time.Second)
 						continue
+					} else {
+						// log.Println("Failed api request, but got 404....lets just continue", summoner.SummonerID, "region:", region)
 					}
 				}
 				// log.Println("SUCCESSFULLY COMPLETED summoner id:", summoner.SummonerID, "region:", region)
+				// log.Println("Done iteration of loop", summoner.SummonerID, region)
+				// log.Println("")
+				time.Sleep(time.Second)
 			}
 		}()
 	}
@@ -402,6 +406,7 @@ func handleGetSummonerByID(ids []lol.SummonerID, region string) error {
 
 func handleGetMatchlist(summoner MySummoner, region string) error {
 	matchList, err := apiEndpointMap[region].GetMatchlist(summoner.SummonerID, 1370475437)
+	// log.Println("done doing match list api call", summoner.SummonerID, region, err)
 	if err != nil {
 		return err
 	}
