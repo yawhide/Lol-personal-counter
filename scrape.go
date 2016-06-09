@@ -62,6 +62,11 @@ type MatchStore struct {
 	Game      string
 }
 
+type FailedSummoner struct {
+	Region     string
+	SummonerID uint64
+}
+
 func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
@@ -103,6 +108,12 @@ func main() {
     game JSON,
     PRIMARY KEY (match_id, region))`)
 
+	createTableSql = append(createTableSql, `
+		CREATE TABLE IF NOT EXISTS failed_summoners (
+		region      text,
+		summoner_id bigint,
+		PRIMARY KEY (region, summoner_id))`)
+
 	err = createSchema(db)
 	if err != nil {
 		panic(err)
@@ -113,18 +124,19 @@ func main() {
 		panic(err)
 	}
 
-	brMatchID = readMatchID("br")
-	euneMatchID = readMatchID("eune")
-	euwMatchID = readMatchID("euw")
-	jpMatchID = readMatchID("jp")
-	krMatchID = readMatchID("kr")
-	lanMatchID = readMatchID("lan")
-	lasMatchID = readMatchID("las")
-	naMatchID = readMatchID("na")
-	oceMatchID = readMatchID("oce")
-	trMatchID = readMatchID("tr")
-	ruMatchID = readMatchID("ru")
-	log.Println(brMatchID, euneMatchID, euwMatchID, jpMatchID, krMatchID, lanMatchID, lasMatchID, naMatchID, oceMatchID, trMatchID, ruMatchID)
+	// brMatchID = readMatchID("br")
+	// euneMatchID = readMatchID("eune")
+	// euwMatchID = readMatchID("euw")
+	// jpMatchID = readMatchID("jp")
+	// krMatchID = readMatchID("kr")
+	// lanMatchID = readMatchID("lan")
+	// lasMatchID = readMatchID("las")
+	// naMatchID = readMatchID("na")
+	// oceMatchID = readMatchID("oce")
+	// trMatchID = readMatchID("tr")
+	// ruMatchID = readMatchID("ru")
+
+	// log.Println(brMatchID, euneMatchID, euwMatchID, jpMatchID, krMatchID, lanMatchID, lasMatchID, naMatchID, oceMatchID, trMatchID, ruMatchID)
 
 	// regionAPIScraper(brLock, "br", brMatchID, 140)
 	// regionAPIScraper(euneLock, "eune", euneMatchID, 140)
@@ -150,10 +162,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 10, 19024790)   //19113823)
-	getMatchlist("kr", 10, 1263903)    // 1262001)
-	getMatchlist("euw", 10, 400873)    // 18998671)
-	getMatchlist("eune", 10, 19805473) // 19944894)
+	getMatchlist("na", 10, 19024790)   //19113823) // 19024790
+	getMatchlist("kr", 10, 1263903)    // 1262001) // 1263903
+	getMatchlist("euw", 10, 400873)    // 18998671) // 400873
+	getMatchlist("eune", 10, 19805473) // 19944894) // 19805473
 
 	select {}
 }
@@ -292,6 +304,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				if currentSummonerIndex >= len(summoners) {
 					lastSummonerID := summoners[len(summoners)-1].SummonerID
 					err := db.Model(&summoners).Where("region = ? and summoner_id >= ?", region, lastSummonerID).Order("summoner_id ASC").Limit(10000).Select()
+					// log.Println(lastSummonerID, summoners[0], currentSummonerIndex)
 					if err != nil {
 						log.Println("last summoner id:", lastSummonerID, "region:", region)
 						panic(err)
@@ -300,13 +313,16 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 						log.Println("Got 0 summoners back from db, we must be done? region:", region)
 						return
 					}
+					fmt.Println("successfully got the next batch of summoner ids starting with:", summoners[0], "region:", region)
 					currentSummonerIndex = 0
 				}
 				summoner := summoners[currentSummonerIndex]
 				// log.Println(summoner.SummonerID, failedAPICalls, currentSummonerIndex, region)
+				usingFailedSummonerID := false
 				if len(failedAPICalls) > 0 {
 					summoner = failedAPICalls[0]
 					failedAPICalls = append(failedAPICalls[:0], failedAPICalls[1:]...)
+					usingFailedSummonerID = true
 					// log.Println("Using a failed api call ID:", summoner.SummonerID, "region:", region)
 				} else {
 					currentSummonerIndex++
@@ -324,7 +340,15 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 					if !strings.HasSuffix(errStr, "404") {
 						lock.Lock()
 						log.Println("Failed an api request starting with summoner id:", summoner.SummonerID, "region:", region, errStr)
-						failedAPICalls = append(failedAPICalls, summoner)
+						if usingFailedSummonerID {
+							_, err = db.Model(&FailedSummoner{region, summoner.SummonerID}).OnConflict("DO NOTHING").Create()
+							if err != nil {
+								fmt.Println("failed to insert failed summoner", err)
+							}
+							log.Println("Summoner id failed twice, adding to db, summoner id:", summoner.SummonerID, "region:", region)
+						} else {
+							failedAPICalls = append(failedAPICalls, summoner)
+						}
 						lock.Unlock()
 						time.Sleep(time.Second)
 						continue
