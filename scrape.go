@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"sync/atomic"
 	// "runtime"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/juju/ratelimit"
@@ -68,6 +68,11 @@ type FailedSummoner struct {
 	SummonerID uint64
 }
 
+type FailedMatch struct {
+	Region  string
+	MatchId uint64
+}
+
 func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
@@ -82,7 +87,7 @@ func main() {
 	db = pg.Connect(&pg.Options{
 		User:        username,
 		Password:    password,
-		PoolSize:    40,
+		PoolSize:    50,
 		PoolTimeout: time.Second * 30,
 	})
 
@@ -115,6 +120,12 @@ func main() {
 		summoner_id bigint,
 		PRIMARY KEY (region, summoner_id))`)
 
+	createTableSql = append(createTableSql, `
+			CREATE TABLE IF NOT EXISTS failed_matches (
+			region   text,
+			match_id bigint,
+			PRIMARY KEY (region, match_id))`)
+
 	err = createSchema(db)
 	if err != nil {
 		panic(err)
@@ -125,31 +136,32 @@ func main() {
 		panic(err)
 	}
 
-	// brMatchID = readMatchID("br")
-	// euneMatchID = readMatchID("eune")
-	// euwMatchID = readMatchID("euw")
-	// jpMatchID = readMatchID("jp")
-	// krMatchID = readMatchID("kr")
-	// lanMatchID = readMatchID("lan")
-	// lasMatchID = readMatchID("las")
-	// naMatchID = readMatchID("na")
-	// oceMatchID = readMatchID("oce")
-	// trMatchID = readMatchID("tr")
-	// ruMatchID = readMatchID("ru")
+	brMatchID = readMatchID("br")
+	euneMatchID = readMatchID("eune")
+	euwMatchID = readMatchID("euw")
+	jpMatchID = readMatchID("jp")
+	krMatchID = readMatchID("kr")
+	lanMatchID = readMatchID("lan")
+	lasMatchID = readMatchID("las")
+	naMatchID = readMatchID("na")
+	oceMatchID = readMatchID("oce")
+	trMatchID = readMatchID("tr")
+	ruMatchID = readMatchID("ru")
 
-	// log.Println(brMatchID, euneMatchID, euwMatchID, jpMatchID, krMatchID, lanMatchID, lasMatchID, naMatchID, oceMatchID, trMatchID, ruMatchID)
+	log.Println("br:", brMatchID, "eune:", euneMatchID, "euw:", euwMatchID, "jp:", jpMatchID, "kr:", krMatchID, "lan:", lanMatchID, "las:", lasMatchID, "na:", naMatchID, "oce:", oceMatchID, "tr:", trMatchID, "ru:", ruMatchID)
 
-	// regionAPIScraper(brLock, "br", brMatchID, 140)
-	// regionAPIScraper(euneLock, "eune", euneMatchID, 140)
-	// regionAPIScraper(euwLock, "euw", euwMatchID, 140)
-	// regionAPIScraper(jpLock, "jp", jpMatchID, 140)
-	// regionAPIScraper(krLock, "kr", krMatchID, 140)
-	// regionAPIScraper(lanLock, "lan", lanMatchID, 140)
-	// regionAPIScraper(lasLock, "las", lasMatchID, 140)
-	// regionAPIScraper(naLock, "na", naMatchID, 140)
-	// regionAPIScraper(oceLock, "oce", oceMatchID, 140)
-	// regionAPIScraper(trLock, "tr", trMatchID, 140)
-	// regionAPIScraper(ruLock, "ru", ruMatchID, 140)
+	// regionAPIScraper(brLock, "br", brMatchID, 300)
+	// regionAPIScraper(euneLock, "eune", euneMatchID, 300)
+	// regionAPIScraper(euwLock, "euw", euwMatchID, 300)
+	// regionAPIScraper(krLock, "kr", krMatchID, 300)
+	// regionAPIScraper(lanLock, "lan", lanMatchID, 300)
+	// regionAPIScraper(lasLock, "las", lasMatchID, 300)
+	regionAPIScraper(naLock, "na", naMatchID, 300)
+	// regionAPIScraper(oceLock, "oce", oceMatchID, 300)
+	// regionAPIScraper(trLock, "tr", trMatchID, 300)
+	// regionAPIScraper(ruLock, "ru", ruMatchID, 300)
+
+	// regionAPIScraper(jpLock, "jp", jpMatchID, 300)
 
 	// getAllSummonerNames("br", 25)
 	// getAllSummonerNames("eune", 25)
@@ -163,10 +175,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 10, 19405027)   //19113823) // 19024790
-	getMatchlist("kr", 10, 1353266)    // 1262001) // 1263903
-	getMatchlist("euw", 10, 19125845)  // 18998671) // 400873
-	getMatchlist("eune", 10, 20208850) // 19944894) // 19805473
+	// getMatchlist("na", 10, 20007658)
+	// getMatchlist("kr", 10, //1353266)
+	// getMatchlist("euw", 10, //19125845)
+	// getMatchlist("eune", 10, //20208850)
 
 	select {}
 }
@@ -218,9 +230,17 @@ func regionAPIScraper(lock *sync.Mutex, region string, savedID uint64, concurren
 							panic(err)
 						}
 						if !strings.HasSuffix(errStr, "404") {
-							lock.Lock()
-							failedAPICalls = append(failedAPICalls, ID)
-							lock.Unlock()
+							if containsUint64(failedIDs, ID) {
+								_, err = db.Model(&FailedMatch{region, ID}).OnConflict("DO NOTHING").Create()
+								if err != nil {
+									fmt.Println("failed to insert failed match into failed_matches", err)
+								}
+								log.Println("Match id failed twice, adding to db, match id:", ID, "region:", region)
+							} else {
+								lock.Lock()
+								failedAPICalls = append(failedAPICalls, ID)
+								lock.Unlock()
+							}
 						}
 					}
 				}(lastMatchID)
@@ -520,6 +540,15 @@ func findMin(arr []uint64) uint64 {
 func containsValidQueueType(queue string) bool {
 	for _, q := range validGameQueueTypes {
 		if queue == q {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint64(arr []uint64, comparer uint64) bool {
+	for _, i := range arr {
+		if i == comparer {
 			return true
 		}
 	}
