@@ -11,6 +11,7 @@ import (
 	// "runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/juju/ratelimit"
@@ -162,10 +163,10 @@ func main() {
 	// getAllSummonerNames("oce", 25)
 	// getAllSummonerNames("tr", 25)
 
-	getMatchlist("na", 10, 19024790)   //19113823) // 19024790
-	getMatchlist("kr", 10, 1263903)    // 1262001) // 1263903
-	getMatchlist("euw", 10, 400873)    // 18998671) // 400873
-	getMatchlist("eune", 10, 19805473) // 19944894) // 19805473
+	getMatchlist("na", 10, 19405027)   //19113823) // 19024790
+	getMatchlist("kr", 10, 1353266)    // 1262001) // 1263903
+	getMatchlist("euw", 10, 19125845)  // 18998671) // 400873
+	getMatchlist("eune", 10, 20208850) // 19944894) // 19805473
 
 	select {}
 }
@@ -289,6 +290,9 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 		panic(err)
 	}
 
+	var count uint64
+	timeElapsed := time.Now()
+
 	// bucket := ratelimit.NewBucketWithRate(140, 140)
 
 	for i := 0; i < concurrency; i++ {
@@ -327,7 +331,6 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				} else {
 					currentSummonerIndex++
 				}
-
 				lock.Unlock()
 				// log.Println("Done using lock to figure out the summoner id to use", summoner.SummonerID, region)
 				err = handleGetMatchlist(summoner, region)
@@ -350,6 +353,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 							failedAPICalls = append(failedAPICalls, summoner)
 						}
 						lock.Unlock()
+						atomic.AddUint64(&count, 1)
 						time.Sleep(time.Second)
 						continue
 					} else {
@@ -359,9 +363,20 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				// log.Println("SUCCESSFULLY COMPLETED summoner id:", summoner.SummonerID, "region:", region)
 				// log.Println("Done iteration of loop", summoner.SummonerID, region)
 				// log.Println("")
+				atomic.AddUint64(&count, 1)
 				time.Sleep(time.Second)
 			}
 		}()
+	}
+	for {
+		lock.Lock()
+		if time.Now().Sub(timeElapsed) > time.Second*30 {
+			log.Println(count, "/ second")
+			timeElapsed = time.Now()
+		}
+		count = 0
+		lock.Unlock()
+		time.Sleep(time.Second)
 	}
 }
 
