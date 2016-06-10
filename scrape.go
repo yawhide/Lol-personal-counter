@@ -354,7 +354,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 						}
 						lock.Unlock()
 						atomic.AddUint64(&count, 1)
-						time.Sleep(time.Second)
+						// time.Sleep(time.Second)
 						continue
 					} else {
 						// log.Println("Failed api request, but got 404....lets just continue", summoner.SummonerID, "region:", region)
@@ -364,7 +364,7 @@ func getMatchlist(region string, concurrency int, startSummonerID uint64) {
 				// log.Println("Done iteration of loop", summoner.SummonerID, region)
 				// log.Println("")
 				atomic.AddUint64(&count, 1)
-				time.Sleep(time.Second)
+				// time.Sleep(time.Second)
 			}
 		}()
 	}
